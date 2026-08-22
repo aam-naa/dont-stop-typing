@@ -45,7 +45,7 @@ const WaitingRoom = () => {
         setPlayers(data.players); // e.g. { "0": "connected", "1": "waiting", ... }
       }
       if (data.type === "all_connected") {
-        console.log(data)
+        console.log("hello i am under the water")
         setStartAt(Date.now() + 5000);
       }
     };
