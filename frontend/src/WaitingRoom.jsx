@@ -67,7 +67,7 @@ const WaitingRoom = () => {
   // Let "Starting!" sit on screen for a beat before leaving the room.
   useEffect(() => {
     if (!starting) return;
-    const timer = setTimeout(() => navigate("/editor", {state: {picId}}), START_HOLD_MS);
+    const timer = setTimeout(() => navigate(`/editor/${roomId}/${role}`, {state: {picId}}), START_HOLD_MS);
     return () => clearTimeout(timer);
   }, [starting, navigate]);
 

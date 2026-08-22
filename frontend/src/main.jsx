@@ -15,7 +15,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App/>} />
         <Route path="/lobby" element={<Lobby/>} />
-        <Route path ="/editor" element={<Editor/>} />
+        <Route path ="/editor/:roomId/:role" element={<Editor/>} />
         <Route path="/room/:roomId" element={<WaitingRoom/>} />
         <Route path="/result" element={<ResultPage />} />
         <Route path="leaderboard" element={<LeaderBoard />} />

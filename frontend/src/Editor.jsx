@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Playground from './components/Playground';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Countdown from 'react-countdown'
 import {useLocation} from 'react-router-dom';
 import {TARGETS} from './targets.js';
@@ -9,51 +9,78 @@ import {TARGETS} from './targets.js';
 const GAME_DURATION_MS = 5 * 60 * 1000; // 5 minutes
 const INTERVAL_MS = 60 * 1000; // 1 minute 
 const MAX_CALLS = 5;
+const NUM_PLAYERS = 5;
 
 const renderer = ({ minutes, seconds }) => (
   <span>{minutes}:{String(seconds).padStart(2, '0')}</span>
 );
 
+async function saveCode(roomId, role, code) {
+  await fetch(`${import.meta.env.VITE_API_URL}/save_code/${roomId}/${role}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code }),
+  });
+}
+
+
 const Editor = () => {
-  const [endAt, setEndAt] = useState(null);
-  const navigate = useNavigate();
+    const { roomId, role } = useParams();
+    const [endAt, setEndAt] = useState(null);
+    const [ currCode, setCurrCode ] = useState(target.starter);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
+    const codeRef = useRef(currCode);
 
-  function swap() {
-    // implement swapping logic here
-    console.log("swap");
-  }
+    useEffect(() => { codeRef.current = currCode; }, [currCode]);
 
-  useEffect(() => {
-    setEndAt(Date.now() + GAME_DURATION_MS);
+    async function swap() {
+        console.log("swap");
+        const roleNum = Number(role)
+        await handleSwap(roomId, roleNum, (roleNum + 1) % NUM_PLAYERS, codeRef.current);
 
-    let calls = 0;
-    const intervalId = setInterval(() => {
-      calls += 1;
-      swap();
-      if (calls >= MAX_CALLS) {
-        clearInterval(intervalId);
-      }
-    }, INTERVAL_MS);
+        // debug: log current server state to the browser console
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/debug/state`);
+        const state = await res.json();
+        console.log("server state:", state);
+    }
+    
+    async function handleSwap(myRoomId, myRole, otherRole, currentCode) {
+    // Save my current code before I lose it
+    await saveCode(myRoomId, myRole, currentCode);
+    }
 
-    return () => clearInterval(intervalId);
-  }, []);
 
-  const location = useLocation();
-  const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
+    useEffect(() => {
+        setEndAt(Date.now() + GAME_DURATION_MS);
 
-  return (
-    <>
-      {endAt && (
-        <Countdown
-          date={endAt}
-          onComplete={() => navigate("/result")}
+        let calls = 0;
+        const intervalId = setInterval(() => {
+        calls += 1;
+        swap();
+        if (calls >= MAX_CALLS) {
+            clearInterval(intervalId);
+        }
+        }, INTERVAL_MS);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    
+    return (
+        <>
+        {endAt && (
+            <Countdown
+            date={endAt}
+            onComplete={() => navigate("/result")}
+            />
+        )}
+        <Playground
+        code={target.starter} image={target.image} onChange={setCurrCode}
         />
-      )}
-    <Playground
-      code={target.starter} image={target.image}
-    />
-    </>
-  )
+        </>
+    )
 }
 
 export default Editor 

@@ -2,12 +2,14 @@ import Editor from '@monaco-editor/react';
 import {useState} from 'react';
 import { useNavigate } from "react-router";
 
-const Playground = ({ code: defaultCode, image: referenceImage }) => {
+const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
     const [code, setCode] = useState(defaultCode);
       const navigate = useNavigate();
   function handleOnChange(value) {
     console.log('value:', value)
-    setCode(value || '');
+    const newCode = value || '';
+    setCode(newCode);
+    onChange?.(newCode); // tell the parent about the edit
   }
 
   return (
