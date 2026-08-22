@@ -24,9 +24,13 @@ const Playground = ({ code: defaultCode }) => {
                 onChange={handleOnChange}
             />
       </div>
-      <div className="flex flex-col gap-6 w-full max-w-3xl m-auto h-full min-h-0 p-6">
-        <img src={arch} className="flex-1 min-h-0 w-full object-contain" />
-        <div className="flex-1 min-h-0 w-full overflow-hidden bg-white">
+      <div className="flex flex-col items-center justify-center gap-20 h-full min-h-0 p-6 overflow-auto">
+        <img
+          src={arch}
+          alt="Target"
+          className="size-[300px] shrink-0 "
+        />
+        <div className="size-[300px] shrink-0 overflow-hidden  bg-white">
           <iframe
             title="preview"
             srcDoc={code}

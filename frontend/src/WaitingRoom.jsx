@@ -21,6 +21,7 @@ const WaitingRoom = () => {
       `/ws/${roomId}/${role}`
     const ws = new WebSocket(wsUrl)
     wsRef.current = ws
+    let timer
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data)
@@ -28,8 +29,10 @@ const WaitingRoom = () => {
         setPlayers(data.players) // e.g. { "0": "connected", "1": "waiting", ... }
       }
       if (data.type === "all_connected") {
-        // TODO: navigate to the actual game screen once everyone's in
-        navigate("/editor");
+        timer = setTimeout(() => {
+          console.log("waited 5")
+          navigate("/editor");
+        }, 5000)
       }
     }
 
@@ -38,6 +41,7 @@ const WaitingRoom = () => {
     }
 
     return () => {
+      clearTimeout(timer)
       ws.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
