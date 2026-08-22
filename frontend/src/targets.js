@@ -16,6 +16,16 @@
  * If the per-target starters give away too much, swap them all for
  * DEFAULT_STARTER below and re-playtest.
  */
+import arch from './assets/arch.png'
+import bullseye from './assets/bullseye.png'
+import crosshair from './assets/crosshair.png'
+import domino from './assets/domino.png'
+import eclipse from './assets/eclipse.png'
+import horizon from './assets/horizon.png'
+import petal from './assets/petal.png'
+import pill from './assets/pill.png'
+import stairs from './assets/stairs.png'
+import trio from './assets/trio.png'
 
 const SHELL = src => `<!DOCTYPE html><html><head><style>
 html,body{margin:0;padding:0;width:300px;height:300px;overflow:hidden;background:#fff}
@@ -35,6 +45,7 @@ const TARGETS = [
     difficulty: 1,
     dies_first: "which circle sits on top",
     id: 0,
+    image: eclipse,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -59,6 +70,7 @@ body{background:#F2EFE6}
     difficulty: 1,
     dies_first: "nothing much — this is the warm-up",
     id: 1,
+    image: crosshair,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -83,6 +95,7 @@ body{background:#2C5CFF}
     difficulty: 2,
     dies_first: "the middle ring is the background colour, not a real ring",
     id: 2,
+    image: bullseye,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -111,6 +124,7 @@ body{background:#17161B}
     difficulty: 1,
     dies_first: "which two corners are rounded — people mirror it",
     id: 3,
+    image: petal,
     starter:
 `<div class="a"></div>
 <style>
@@ -129,6 +143,7 @@ body{background:#FFC93F}
     difficulty: 2,
     dies_first: "three widths and three colours is a lot to hold at once",
     id: 4,
+    image: stairs,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -157,6 +172,7 @@ body{background:#F2EFE6}
     difficulty: 1,
     dies_first: "the diagonal flips",
     id: 5,
+    image: domino,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -181,6 +197,7 @@ body{background:#F2EFE6}
     difficulty: 2,
     dies_first: "the base is a different colour from the arch",
     id: 6,
+    image: arch,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -203,6 +220,7 @@ body{background:#FF4A6E}
     difficulty: 1,
     dies_first: "how round the ends are",
     id: 7,
+    image: pill,
     starter:
 `<div class="a"></div>
 <style>
@@ -221,6 +239,7 @@ body{background:#17161B}
     difficulty: 1,
     dies_first: "the spacing between them",
     id: 8,
+    image: trio,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -249,6 +268,7 @@ body{background:#2C5CFF}
     difficulty: 1,
     dies_first: "how far the sun overlaps the horizon",
     id: 9,
+    image: horizon,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -267,5 +287,7 @@ body{background:#F2EFE6}
 </style>`
   }
 ];
+
+export { TARGETS, SHELL, DEFAULT_STARTER };
 
 if (typeof module !== "undefined") module.exports = { TARGETS, SHELL, DEFAULT_STARTER };

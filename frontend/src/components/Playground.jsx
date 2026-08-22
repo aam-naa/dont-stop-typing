@@ -1,9 +1,10 @@
 import Editor from '@monaco-editor/react';
 import arch from '../assets/arch.png';
+import TARGETS from '../targets.js'
 import {useState} from 'react';
 import { useNavigate } from "react-router";
 
-const Playground = ({ code: defaultCode }) => {
+const Playground = ({ code: defaultCode }, {image: referenceImage}) => {
     const [code, setCode] = useState(defaultCode);
       const navigate = useNavigate();
   function handleOnChange(value) {
@@ -32,7 +33,7 @@ const Playground = ({ code: defaultCode }) => {
         <div className="flex flex-col items-center gap-2 shrink-0">
           <p>Reference Image</p>
           <img
-            src={arch}
+            src={referenceImage}
             alt="Target"
             className="size-[300px]"
           />
