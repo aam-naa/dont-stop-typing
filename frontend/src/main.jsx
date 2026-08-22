@@ -4,7 +4,6 @@ import './index.css'
 import App from './App.jsx'
 import Lobby from './Lobby.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import WaitingRoom from './WaitingRoom.jsx'
 import Editor from './Editor.jsx'
 
 createRoot(document.getElementById('root')).render(
