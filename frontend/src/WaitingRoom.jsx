@@ -46,6 +46,7 @@ const WaitingRoom = () => {
       }
       if (data.type === "all_connected") {
         console.log("hello i am under the water")
+        console.log(data)
         setStartAt(Date.now() + 5000);
       }
     };
