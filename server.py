@@ -77,6 +77,7 @@ async def notify_room_status(ws:WebSocket, room_id: str):
     room = rooms[room_id]
     for player in room:
         if not isinstance(room[player], WebSocket):
+            ws.send_json({"type": "room_status"})
             return
     await ws.send_json({"type": "all_connected"})
 
