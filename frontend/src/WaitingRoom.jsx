@@ -6,6 +6,8 @@ import Countdown from "react-countdown";
 // Matches num_players in create_room (backend.py)
 const NUM_PLAYERS = 5;
 
+const Completionist = () => <span>Starting!</span>;
+
 const WaitingRoom = () => {
   const { roomId } = useParams();
   const [searchParams] = useSearchParams();
@@ -14,16 +16,14 @@ const WaitingRoom = () => {
 
   // players[i] will be "connected" | "reserved" | "waiting"
   const [players, setPlayers] = useState({});
+  // Deadline for the pre-game countdown; null until the room fills up.
+  const [startAt, setStartAt] = useState(null);
   const wsRef = useRef(null);
-  const renderer = ({ hours, minutes, seconds, completed }) => {
+  const renderer = ({ seconds, completed }) => {
     if (completed) {
-      navigate("/editor");
+      return <Completionist />;
     } else {
-      return (
-        <span>
-          {seconds}
-        </span>
-      );
+      return <span>{seconds}</span>;
     }
   };
 
@@ -33,7 +33,6 @@ const WaitingRoom = () => {
       `/ws/${roomId}/${role}`;
     const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
-    let timer;
 
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
@@ -41,7 +40,7 @@ const WaitingRoom = () => {
         setPlayers(data.players); // e.g. { "0": "connected", "1": "waiting", ... }
       }
       if (data.type === "all_connected") {
-        <Countdown date={Date.now() + 5000} renderer={renderer} />;
+        setStartAt(Date.now() + 5000);
       }
     };
 
@@ -50,7 +49,6 @@ const WaitingRoom = () => {
     };
 
     return () => {
-      clearTimeout(timer);
       ws.close();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -61,6 +59,14 @@ const WaitingRoom = () => {
       <h2>
         Room code: <code>{roomId}</code>
       </h2>
+
+      {startAt && (
+        <Countdown
+          date={startAt}
+          renderer={renderer}
+          onComplete={() => navigate("/editor")}
+        />
+      )}
 
       <ul className="player-grid">
         {Array.from({ length: NUM_PLAYERS }, (_, i) => {
