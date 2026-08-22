@@ -85,7 +85,7 @@ const WaitingRoom = () => {
 
       <ul className="player-grid">
         {Array.from({ length: NUM_PLAYERS }, (_, i) => {
-          console.log(players);
+          // console.log(players);
           const status = players[String(i)] ?? "waiting";
           const isConnected = status === "connected";
           const isReserved = status === "reserved";
