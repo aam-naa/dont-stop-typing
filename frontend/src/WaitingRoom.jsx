@@ -6,6 +6,9 @@ import Countdown from "react-countdown";
 // Matches num_players in create_room (backend.py)
 const NUM_PLAYERS = 5;
 
+// How long "Starting!" stays on screen after the countdown hits zero.
+const START_HOLD_MS = 1500;
+
 const Completionist = () => <span>Starting!</span>;
 
 const WaitingRoom = () => {
@@ -18,12 +21,14 @@ const WaitingRoom = () => {
   const [players, setPlayers] = useState({});
   // Deadline for the pre-game countdown; null until the room fills up.
   const [startAt, setStartAt] = useState(null);
+  // True once the countdown hits zero, while "Starting!" is still showing.
+  const [starting, setStarting] = useState(false);
   const wsRef = useRef(null);
   const renderer = ({ seconds, completed }) => {
     if (completed) {
       return <Completionist />;
     } else {
-      return <span>{seconds}</span>;
+      return <span>Starting in: {seconds}</span>;
     }
   };
 
@@ -53,6 +58,14 @@ const WaitingRoom = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId, role]);
+
+  // Let "Starting!" sit on screen for a beat before leaving the room.
+  useEffect(() => {
+    if (!starting) return;
+    const timer = setTimeout(() => navigate("/editor"), START_HOLD_MS);
+    return () => clearTimeout(timer);
+  }, [starting, navigate]);
+
   return (
     <section id="center">
       <h1>Waiting Room</h1>
@@ -64,7 +77,7 @@ const WaitingRoom = () => {
         <Countdown
           date={startAt}
           renderer={renderer}
-          onComplete={() => navigate("/editor")}
+          onComplete={() => setStarting(true)}
         />
       )}
 
