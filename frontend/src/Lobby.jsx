@@ -8,6 +8,14 @@ import { useNavigate } from "react-router";
 function Lobby() {
   const navigate = useNavigate();
 
+  async function handleCreate() {
+    const res = await fetch("http://127.0.0.1:8000/create_room", {
+      method: "POST",
+    });
+    const { room_id } = await res.json();
+    navigate(`/room/${room_id}`);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     // Read the form data
@@ -15,6 +23,7 @@ function Lobby() {
     const formData = new FormData(form);
     const joinCode = formData.get("room");
     navigate(`/room/${joinCode}`);
+    console.log(joinCode);
   }
 
   return (
@@ -32,7 +41,7 @@ function Lobby() {
             <code>css</code>!
           </p>
         </div>
-        <button type="button" onClick={() => navigate("/create_room")}>
+        <button type="button" onClick={handleCreate}>
           Create Room
         </button>
         <form onSubmit={handleSubmit}>
