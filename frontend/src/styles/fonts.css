@@ -11,7 +11,12 @@
  */
 @font-face {
   font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono[wght].woff2") format("woff2-variations");
+  /* Filename deliberately has no square brackets. JetBrains ships the variable
+     font as "JetBrainsMono[wght].woff2", but Vite percent-encodes the brackets
+     in the emitted CSS (%5Bwght%5D) while the <link rel=preload> in index.html
+     keeps them raw — two different URLs, so the preload never matched, the
+     browser warned about an unused preload, and the font downloaded twice. */
+  src: url("/fonts/JetBrainsMono-Variable.woff2") format("woff2-variations");
   font-weight: 100 800;
   font-style: normal;
   font-display: swap;

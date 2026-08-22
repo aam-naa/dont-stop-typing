@@ -1,11 +1,17 @@
 import MonacoEditor, { useMonaco } from "@monaco-editor/react";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { useTheme } from "../hooks/useTheme";
 import { MONACO_THEMES, editorOptions, monacoThemeName } from "../monacoTheme";
 
 const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
-    const [code, setCode] = useState(defaultCode);
-      const navigate = useNavigate();
+  const [code, setCode] = useState(defaultCode);
+  const navigate = useNavigate();
+  // Both hooks feed the theming effect below; without these calls `monaco` and
+  // `theme` are undefined and the component throws on render.
+  const monaco = useMonaco();
+  const theme = useTheme();
+
   function handleOnChange(value) {
     console.log('value:', value)
     const newCode = value || '';
