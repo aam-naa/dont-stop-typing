@@ -1,13 +1,24 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/image.png'
-import './App.css'
-import { useNavigate } from 'react-router'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
+import heroImg from "./assets/image.png";
+import "./App.css";
+import { useNavigate } from "react-router";
+
+function EnterCode() {
+  e.preventDefault();
+  // Read the form data
+  const form = e.target;
+  const formData = new FormData(form);
+
+  // Or you can work with it as a plain object:
+  const formJson = Object.fromEntries(formData.entries());
+  console.log(formJson);
+}
 
 function JoinRoom() {
-  const [count, setCount] = useState(0)
-  const navigate = useNavigate()
+  const [count, setCount] = useState(0);
+  const navigate = useNavigate();
 
   return (
     <>
@@ -20,18 +31,24 @@ function JoinRoom() {
         <div>
           <h1>Join Room</h1>
           <p>
-            A party game for <code>coding</code> enthusiasts - test your <code>css</code>!
+            A party game for <code>coding</code> enthusiasts - test your{" "}
+            <code>css</code>!
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate("/lobby")}
-        >
+        <input />
+        <button type="button" onClick={() => navigate("/lobby")}>
           Start Game
         </button>
+        <form method="post" onSubmit={EnterCode}>
+          <label>
+            Enter Room Code:{" "}
+            <input name="room" />
+          </label>
+          <button type="submit">Submit form</button>
+        </form>
       </section>
     </>
-  )
+  );
 }
 
-export default JoinRoom 
+export default JoinRoom;

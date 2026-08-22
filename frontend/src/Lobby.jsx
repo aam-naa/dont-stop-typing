@@ -1,12 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/image.png'
-import './App.css'
-import { useNavigate } from 'react-router'
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
+import heroImg from "./assets/image.png";
+import "./App.css";
+import { useNavigate } from "react-router";
+
+function handleSubmit(e) {
+  const navigate = useNavigate();
+  // Prevent the browser from reloading the page
+  e.preventDefault();
+
+  // Read the form data
+  const form = e.target;
+  const formData = new FormData(form);
+  const joinCode = formData.get("room");
+  navigate(`/room/'${joinCode}'`)
+  console.log(joinCode);
+}
 
 function Lobby() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <>
@@ -19,27 +32,22 @@ function Lobby() {
         <div>
           <h1>Create or Join a Room</h1>
           <p>
-            A party game for <code>coding</code> enthusiasts - test your <code>css</code>!
+            A party game for <code>coding</code> enthusiasts - test your{" "}
+            <code>css</code>!
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate("/create_room")}
-        >
-          Create Room 
+        <button type="button" onClick={() => navigate("/create_room")}>
+          Create Room
         </button>
-        <button
-          type="button"
-          onClick={() => navigate("/join_room")}
-        >
-          Join Room 
-        </button>
-
+        <form onSubmit={handleSubmit}>
+          <input name="room" />
+          <button type="submit">Join Room</button>
+        </form>
       </section>
 
       <section id="spacer"></section>
     </>
-  )
+  );
 }
 
-export default Lobby 
+export default Lobby;
