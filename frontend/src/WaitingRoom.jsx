@@ -6,10 +6,40 @@ import './App.css'
 const NUM_PLAYERS = 5
 
 const WaitingRoom = () => {
-  const {roomId} = useParams()
+  const { roomId } = useParams()
   const [searchParams] = useSearchParams()
   const role = Number(searchParams.get("role"))
 
+  // players[i] will be "connected" | "reserved" | "waiting"
+  const [players, setPlayers] = useState({})
+  const wsRef = useRef(null)
+
+  useEffect(() => {
+    const wsUrl =
+      import.meta.env.VITE_API_URL.replace(/^http/, "ws") +
+      `/ws/${roomId}/${role}`
+    const ws = new WebSocket(wsUrl)
+    wsRef.current = ws
+
+    ws.onmessage = (event) => {
+      const data = JSON.parse(event.data)
+      if (data.type === "room_status") {
+        setPlayers(data.players) // e.g. { "0": "connected", "1": "waiting", ... }
+      }
+      if (data.type === "all_connected") {
+        // TODO: navigate to the actual game screen once everyone's in
+      }
+    }
+
+    ws.onclose = (event) => {
+      console.log("Websocket closed", event.code, event.reason)
+    }
+
+    return () => {
+      ws.close()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId, role])
   return (
     <section id="center">
       <h1>Waiting Room</h1>
