@@ -29,7 +29,17 @@ const WaitingRoom = () => {
       }
       if (data.type === "all_connected") {
         // TODO: navigate to the actual game screen once everyone's in
-        navigate("/editor");
+         let count = 5
+      setCountdown(count)
+      countdownInterval = setInterval(() => {
+        count -= 1
+        if (count <= 0) {
+          clearInterval(countdownInterval)
+          navigate("/editor")
+        } else {
+          setCountdown(count)
+        }
+      }, 1000)
       }
     }
 
