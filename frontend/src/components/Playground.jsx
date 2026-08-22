@@ -1,9 +1,11 @@
 import Editor from '@monaco-editor/react';
 import arch from '../assets/arch.png';
 import {useState} from 'react';
+import { useNavigate } from "react-router";
 
 const Playground = ({ code: defaultCode }) => {
     const [code, setCode] = useState(defaultCode);
+      const navigate = useNavigate();
   function handleOnChange(value) {
     console.log('value:', value)
     setCode(value || '');
@@ -11,8 +13,9 @@ const Playground = ({ code: defaultCode }) => {
 
   return (
     <div className="grid grid-cols-2 h-dvh">
-        <div className="bg-[#1e1e1e] py-6 h-full min-h-0">
-            <Editor
+        <div className="flex flex-col bg-[#1e1e1e] py-6 h-full min-h-0">
+            <div className="flex-1 min-h-0">
+              <Editor
                 defaultLanguage="html"
                 defaultValue={code.trim()}
                 theme="vs-dark"
@@ -22,9 +25,10 @@ const Playground = ({ code: defaultCode }) => {
                 contextmenu: false
                 }}
                 onChange={handleOnChange}
-            />
+              />
+            </div>
       </div>
-      <div className="flex flex-col items-center justify-center gap-20 h-full min-h-0 p-6 overflow-auto">
+      <div className="relative flex flex-col items-center justify-center gap-10 h-full min-h-0 p-6 overflow-hidden">
         <div className="flex flex-col items-center gap-2 shrink-0">
           <p>Reference Image</p>
           <img
@@ -42,6 +46,9 @@ const Playground = ({ code: defaultCode }) => {
             className="w-full h-full border-0"
           />
         </div>
+        <button type="button" className="absolute bottom-6 right-6 z-10" >
+          Submit!
+        </button>
       </div>
     </div>
   )

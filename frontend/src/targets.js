@@ -34,6 +34,7 @@ const TARGETS = [
     name: "eclipse",
     difficulty: 1,
     dies_first: "which circle sits on top",
+    id: 0,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -57,6 +58,7 @@ body{background:#F2EFE6}
     name: "crosshair",
     difficulty: 1,
     dies_first: "nothing much — this is the warm-up",
+    id: 1,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -80,6 +82,7 @@ body{background:#2C5CFF}
     name: "bullseye",
     difficulty: 2,
     dies_first: "the middle ring is the background colour, not a real ring",
+    id: 2,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -107,6 +110,7 @@ body{background:#17161B}
     name: "petal",
     difficulty: 1,
     dies_first: "which two corners are rounded — people mirror it",
+    id: 3,
     starter:
 `<div class="a"></div>
 <style>
@@ -124,6 +128,7 @@ body{background:#FFC93F}
     name: "stairs",
     difficulty: 2,
     dies_first: "three widths and three colours is a lot to hold at once",
+    id: 4,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -151,6 +156,7 @@ body{background:#F2EFE6}
     name: "domino",
     difficulty: 1,
     dies_first: "the diagonal flips",
+    id: 5,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -174,6 +180,7 @@ body{background:#F2EFE6}
     name: "arch",
     difficulty: 2,
     dies_first: "the base is a different colour from the arch",
+    id: 6,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -195,6 +202,7 @@ body{background:#FF4A6E}
     name: "pill",
     difficulty: 1,
     dies_first: "how round the ends are",
+    id: 7,
     starter:
 `<div class="a"></div>
 <style>
@@ -212,6 +220,7 @@ body{background:#17161B}
     name: "trio",
     difficulty: 1,
     dies_first: "the spacing between them",
+    id: 8,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
@@ -239,6 +248,7 @@ body{background:#2C5CFF}
     name: "horizon",
     difficulty: 1,
     dies_first: "how far the sun overlaps the horizon",
+    id: 9,
     starter:
 `<div class="a"></div>
 <div class="b"></div>
