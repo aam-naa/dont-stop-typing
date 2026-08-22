@@ -16,6 +16,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def health():
+    return {"status":"healthy"}
+
 @app.post("/create_room")
 def create_room(num_players=2):
     code = str(random.randint(1000, 9999))
