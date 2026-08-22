@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import Lobby from './Lobby.jsx'
-import Editor from './Editor.jsx'
+import WaitingRoom from './WaitingRoom.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import WaitingRoom from './WaitingRoom.jsx'
 
@@ -15,6 +15,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/lobby" element={<Lobby/>} />
         <Route path ="/editor" element={<Editor/>} />
         <Route path="/waiting_room" element={<WaitingRoom />} />
+        <Route path="/room/:roomId" element={<WaitingRoom/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
