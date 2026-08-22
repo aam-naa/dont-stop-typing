@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import './App.css'
+import { useNavigate } from 'react-router'
 
 function App() {
   const [count, setCount] = useState(0)
+  const navigate = useNavigate()
 
   return (
     <>
@@ -16,8 +18,7 @@ function App() {
         </div>
         <button
           type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+          onClick={() => navigate("/lobby")}
         >
           Start Game
         </button>
