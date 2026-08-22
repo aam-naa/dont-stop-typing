@@ -23,6 +23,8 @@ const WaitingRoom = () => {
   const [startAt, setStartAt] = useState(null);
   // True once the countdown hits zero, while "Starting!" is still showing.
   const [starting, setStarting] = useState(false);
+  const [picId, setPicId] = useState(null);
+
   const wsRef = useRef(null);
   const renderer = ({ seconds, completed }) => {
     if (completed) {
@@ -47,6 +49,7 @@ const WaitingRoom = () => {
       if (data.type === "all_connected") {
         console.log("hello i am under the water")
         console.log(data)
+        setPicId(data.pic_id)
         setStartAt(Date.now() + 5000);
       }
     };
@@ -64,7 +67,7 @@ const WaitingRoom = () => {
   // Let "Starting!" sit on screen for a beat before leaving the room.
   useEffect(() => {
     if (!starting) return;
-    const timer = setTimeout(() => navigate("/editor"), START_HOLD_MS);
+    const timer = setTimeout(() => navigate("/editor", {state: {picId}}), START_HOLD_MS);
     return () => clearTimeout(timer);
   }, [starting, navigate]);
 

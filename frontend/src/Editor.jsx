@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import Playground from './components/Playground';
 import { useNavigate } from 'react-router-dom';
 import Countdown from 'react-countdown'
+import {useLocation} from 'react-router-dom';
+import {TARGETS} from './targets.js';
 
 const GAME_DURATION_MS = 0.5 * 60 * 1000; // 30s 
 
@@ -17,6 +19,9 @@ const Editor = () => {
   useEffect(() => {
     setEndAt(Date.now() + GAME_DURATION_MS);
   }, []);
+  const location = useLocation();
+
+  const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
 
   return (
     <>
@@ -28,16 +33,7 @@ const Editor = () => {
         />
       )}
     <Playground
-      code={`
-<div class="a"></div>
-<div class="b"></div>
-<style>
-body{background:#fff}
-.a,.b{position:absolute;width:70px;height:70px;top:40px}
-.a{left:20px;background:#dd6b4d}
-.b{left:70px;background:#8a8a8a}
-</style>
-        `}
+      code={target.starter} image={target.image}
     />
     </>
   )
