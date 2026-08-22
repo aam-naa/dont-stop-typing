@@ -61,7 +61,7 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
     await ws.accept()
     room[role] = ws
     await broadcast_room_status(room_id)
-    # await notify_room_status(ws, room_id)
+    await notify_room_status(ws, room_id)
 
     try:
         while True:
