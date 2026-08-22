@@ -31,6 +31,10 @@ app.mount(
     name="frontend"
 )
 
+@app.get("/")
+async def root():
+    return {"message":"hey"}
+
 @app.post("/create_room")
 def create_room(num_players=5):
     code = str(random.randint(1000, 9999))
