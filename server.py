@@ -1,6 +1,7 @@
 import os
 from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from core.helper_functions.react_helper import get_file_response_or_404
 from fastapi.middleware.cors import CORSMiddleware
 import random
 
@@ -17,6 +18,19 @@ app.mount(
     StaticFiles(directory=static_dir, html=False),
     name="frontend"
 )
+
+@app.get("/{full_path:path}")
+async def frontend(full_path: str):
+    frontend_dir = "/frontend/dist"
+    
+    # Handle local dev paths
+    if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
+        frontend_dir = "frontend/dist"
+
+    return get_file_response_or_404(
+        os.path.join(frontend_dir, full_path), # Try to serve the specific file
+        os.path.join(frontend_dir, "index.html") # Fallback to index.html
+    )
 
 app.add_middleware(
     CORSMiddleware,
