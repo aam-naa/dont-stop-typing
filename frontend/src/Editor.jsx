@@ -25,12 +25,13 @@ async function saveCode(roomId, role, code) {
 
 
 const Editor = () => {
+    const location = useLocation();
+    const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
+
     const { roomId, role } = useParams();
     const [endAt, setEndAt] = useState(null);
     const [ currCode, setCurrCode ] = useState(target.starter);
     const navigate = useNavigate();
-    const location = useLocation();
-    const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
     const codeRef = useRef(currCode);
 
     useEffect(() => { codeRef.current = currCode; }, [currCode]);
@@ -47,8 +48,8 @@ const Editor = () => {
     }
     
     async function handleSwap(myRoomId, myRole, otherRole, currentCode) {
-    // Save my current code before I lose it
-    await saveCode(myRoomId, myRole, currentCode);
+        // Save my current code before I lose it
+        await saveCode(myRoomId, myRole, currentCode);
     }
 
 
