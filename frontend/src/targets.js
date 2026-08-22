@@ -288,5 +288,5 @@ body{background:#F2EFE6}
   }
 ];
 
-export default { TARGETS, SHELL, DEFAULT_STARTER }
+export { TARGETS, SHELL, DEFAULT_STARTER }
 

@@ -1,10 +1,8 @@
 import Editor from '@monaco-editor/react';
-import arch from '../assets/arch.png';
-import TARGETS from '../targets.js'
 import {useState} from 'react';
 import { useNavigate } from "react-router";
 
-const Playground = ({ code: defaultCode }, {image: referenceImage}) => {
+const Playground = ({ code: defaultCode, image: referenceImage }) => {
     const [code, setCode] = useState(defaultCode);
       const navigate = useNavigate();
   function handleOnChange(value) {
