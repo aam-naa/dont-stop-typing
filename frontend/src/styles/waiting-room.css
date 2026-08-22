@@ -1,0 +1,131 @@
+/* ─── waiting room ───────────────────────────────────────────────────────────
+ * Replaces the old .player-grid / .player-slot rounded dashed cards.
+ *
+ * Two views of the same data: a compact slot strip that reads from across a
+ * room, and a detail list that is the truth. Every state carries a glyph and a
+ * word; colour is only reinforcement.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  .room-meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.25lh 2ch;
+    align-items: baseline;
+  }
+
+  .room-meta dt {
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .room-meta dd {
+    margin: 0;
+    color: var(--foreground0);
+  }
+
+  .room-code {
+    color: var(--dst-accent);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.3em;
+  }
+
+  /* ── slot strip: [▉ ▉ ▢ ▢ ▢] ──────────────────────────────────────────────
+     Drawn as CSS boxes rather than ■/□ glyphs. Our self-hosted JetBrains Mono
+     does give those glyphs a correct one-cell advance, but CSS boxes stay
+     pixel-exact even if the webfont fails and a fallback takes over. */
+
+  .slots {
+    display: inline-flex;
+    align-items: center;
+    gap: 1ch;
+    color: var(--background3);
+  }
+
+  .slot {
+    inline-size: 1ch;
+    block-size: 1lh;
+    display: inline-block;
+  }
+
+  .slot[data-state="waiting"] {
+    box-shadow: inset 0 0 0 1px var(--background3);
+  }
+
+  .slot[data-state="reserved"] {
+    box-shadow: inset 0 0 0 1px var(--dst-accent);
+  }
+
+  .slot[data-state="connected"] {
+    background: var(--dst-ok);
+  }
+
+  .slot[data-state="you"] {
+    background: var(--dst-accent);
+  }
+
+  /* ── player list ─────────────────────────────────────────────────────────── */
+
+  .players {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .players li::before {
+    content: none;
+  }
+
+  .prow {
+    display: grid;
+    grid-template-columns: 2ch 3ch 2ch 1fr;
+    gap: 0 1ch;
+    align-items: baseline;
+    padding-inline: 1ch;
+  }
+
+  /* Reverse video for "you" — it changes shape, not just hue, so it survives
+     both colour blindness and a grayscale check. */
+  .prow[data-you="true"] {
+    background: var(--dst-accent);
+    color: var(--background0);
+  }
+
+  .prow-marker::before {
+    content: " ";
+  }
+
+  .prow[data-you="true"] .prow-marker::before {
+    content: ">";
+  }
+
+  .prow-glyph[data-state="connected"] {
+    color: var(--dst-ok);
+  }
+
+  .prow-glyph[data-state="reserved"] {
+    color: var(--dst-accent);
+  }
+
+  .prow-glyph[data-state="waiting"] {
+    color: var(--foreground2);
+  }
+
+  .prow-state {
+    color: var(--foreground2);
+  }
+
+  /* Reverse video wins over the per-state colours. */
+  .prow[data-you="true"] .prow-glyph,
+  .prow[data-you="true"] .prow-state {
+    color: inherit;
+  }
+
+  .starting {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--dst-accent);
+    font-variant-numeric: tabular-nums;
+  }
+}

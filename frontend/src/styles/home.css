@@ -1,0 +1,78 @@
+/* ─── landing ────────────────────────────────────────────────────────────── */
+
+@layer app {
+  .home {
+    align-items: center;
+    text-align: center;
+  }
+
+  .wordmark {
+    max-inline-size: 100%;
+    /* Backstop: the banner is a fixed character grid and `white-space: pre`
+       never wraps, so if it ever exceeds the viewport it scrolls inside this
+       header rather than widening the page.
+       Deliberately NOT a centred flex container — an overflowing flex item
+       under `justify-content: center` gets clipped at BOTH ends and cannot be
+       scrolled back to. The auto margins below centre it while it fits and
+       collapse to 0 when it doesn't. */
+    overflow-x: auto;
+  }
+
+  /* WebTUI's pre component paints a background band and 1lh/1ch padding; the
+     wordmark wants bare glyphs on the page background. */
+  .wordmark-art {
+    background: none;
+    padding: 0;
+    margin: 0;
+    color: var(--dst-accent);
+    /* Must stay at or below 0.94. In JetBrains Mono the | / and \ glyphs each
+       span exactly 0.940em vertically, so any larger line-height leaves a gap
+       between rows and every vertical bar and diagonal in the art renders as a
+       dashed line instead of a stroke. 0.92 leaves a little margin. */
+    line-height: 0.92;
+    /* Both MUST be 0: the art uses spaces as pixels, so any tracking or word
+       spacing shears the letters apart. */
+    letter-spacing: 0;
+    word-spacing: 0;
+    white-space: pre;
+    /* Sized off the viewport, not the type scale: the banner is a fixed
+       176-column grid = 105.6em, so its width is its own geometry. 0.88vw keeps
+       105.6em inside the viewport at every width, including the narrow
+       breakpoint where .shell-main drops to 1ch of side padding. The 15px cap
+       stops it ballooning on ultrawide displays. */
+    font-size: min(15px, 0.88vw);
+    inline-size: max-content;
+    margin-inline: auto;
+  }
+
+  .home-tagline {
+    color: var(--foreground1);
+    /* Two stacked copies in one cell: the full-text ghost fixes the height so
+       the buttons below don't move while the line count grows during typing. */
+    display: grid;
+    justify-items: center;
+    /* min() not a bare 56ch: .col centres its children, so in the cross axis
+       they size to their own content and a fixed ch width happily overflows a
+       narrow viewport instead of shrinking. */
+    max-inline-size: min(56ch, 100%);
+  }
+
+  .home-tagline > .tw-ghost,
+  .home-tagline > .tw-live {
+    grid-area: 1 / 1;
+  }
+
+  /* opacity, not visibility or aria-hidden: this is the copy screen readers
+     read, so it has to stay in the accessibility tree. */
+  .tw-ghost {
+    opacity: 0;
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .home-tagline code {
+    color: var(--dst-accent);
+    background: none;
+    padding: 0;
+  }
+}

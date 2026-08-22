@@ -10,18 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@codemirror/lang-css": "^6.3.1",
-    "@codemirror/state": "^6.7.1",
-    "@codemirror/view": "^6.43.9",
     "@monaco-editor/react": "^4.7.0",
-    "@tailwindcss/vite": "^4.3.3",
-    "codemirror": "^6.0.2",
+    "@webtui/css": "^0.1.10",
+    "@webtui/theme-catppuccin": "^0.0.5",
+    "@webtui/theme-gruvbox": "^0.0.3",
+    "monaco-editor": "^0.56.0",
     "react": "^19.2.8",
     "react-countdown": "^2.3.6",
     "react-dom": "^19.2.8",
-    "react-live": "^4.1.8",
-    "react-router-dom": "^7.18.2",
-    "tailwindcss": "^4.3.3"
+    "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
     "@types/react": "^19.2.17",

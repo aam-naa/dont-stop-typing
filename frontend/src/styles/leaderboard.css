@@ -1,0 +1,95 @@
+/* ─── leaderboard ────────────────────────────────────────────────────────── */
+
+@layer app {
+  .board {
+    inline-size: 100%;
+  }
+
+  .board td,
+  .board th {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .board .num {
+    text-align: right;
+  }
+
+  /* The "you" highlight is painted on the cells, not the row.
+   *
+   * WebTUI's table gives every td `padding-bottom: 1lh` and draws the row rule
+   * as a td::after sitting at `bottom: 0.5lh` — i.e. in the middle of that
+   * padding. A solid background on the <tr> therefore covers 2lh, swallowing
+   * the rule and leaving a band that looks a line too tall and sits low
+   * relative to its own text. Painting only the first 1lh of each cell keeps
+   * the highlight on the text line and leaves the rule visible. */
+  .board tr[data-you="true"] td {
+    color: var(--background0);
+    background-image: linear-gradient(
+      to bottom,
+      var(--dst-accent) 0 1lh,
+      transparent 1lh
+    );
+  }
+
+  /* Score comes in as a data attribute, in 5%% steps, so the JSX carries data
+     and never styling. At 20 cells wide, 5%% is exactly one cell — finer
+     granularity would not be visible anyway. */
+  .bar[data-pct="0"] { --pct: 0; }
+  .bar[data-pct="5"] { --pct: 5; }
+  .bar[data-pct="10"] { --pct: 10; }
+  .bar[data-pct="15"] { --pct: 15; }
+  .bar[data-pct="20"] { --pct: 20; }
+  .bar[data-pct="25"] { --pct: 25; }
+  .bar[data-pct="30"] { --pct: 30; }
+  .bar[data-pct="35"] { --pct: 35; }
+  .bar[data-pct="40"] { --pct: 40; }
+  .bar[data-pct="45"] { --pct: 45; }
+  .bar[data-pct="50"] { --pct: 50; }
+  .bar[data-pct="55"] { --pct: 55; }
+  .bar[data-pct="60"] { --pct: 60; }
+  .bar[data-pct="65"] { --pct: 65; }
+  .bar[data-pct="70"] { --pct: 70; }
+  .bar[data-pct="75"] { --pct: 75; }
+  .bar[data-pct="80"] { --pct: 80; }
+  .bar[data-pct="85"] { --pct: 85; }
+  .bar[data-pct="90"] { --pct: 90; }
+  .bar[data-pct="95"] { --pct: 95; }
+  .bar[data-pct="100"] { --pct: 100; }
+
+  /* A discrete 20-cell bar. The block glyphs █▉▊ do exist in our self-hosted
+     font at a correct one-cell advance, but a masked gradient can't be broken
+     by a font fallback and gives exact percentages rather than eighths. */
+  .bar {
+    display: inline-block;
+    inline-size: 20ch;
+    block-size: 1lh;
+    vertical-align: text-bottom;
+    background: linear-gradient(
+      to right,
+      var(--dst-ok) 0 calc(var(--pct, 0) * 1%),
+      var(--background2) calc(var(--pct, 0) * 1%) 100%
+    );
+    mask-image: repeating-linear-gradient(
+      to right,
+      #000 0 calc(1ch - 2px),
+      transparent calc(1ch - 2px) 1ch
+    );
+  }
+
+  /* On the highlighted row the bar inverts, so it stays legible against the
+     accent instead of disappearing into it. */
+  tr[data-you="true"] .bar {
+    background-image: linear-gradient(
+      to right,
+      var(--background0) 0 calc(var(--pct, 0) * 1%),
+      color-mix(in oklab, var(--background0) 22%, transparent)
+        calc(var(--pct, 0) * 1%) 100%
+    );
+  }
+
+  @media (max-width: 640px) {
+    .bar {
+      inline-size: 10ch;
+    }
+  }
+}

@@ -1,0 +1,64 @@
+/* ─── semantic tokens ────────────────────────────────────────────────────────
+ *
+ * WebTUI gives us --background0..3 and --foreground0..2, and each theme package
+ * adds its own accent vocabulary — but those vocabularies DON'T MATCH:
+ *
+ *   gruvbox     variant-="red green yellow blue purple aqua orange gray"
+ *   catppuccin  variant-="red green yellow blue mauve peach pink teal ..."
+ *   neovim      none at all — it is ours, not a package
+ *
+ * So `<button variant-="green">` works in two of the three and silently does
+ * nothing in the other. We therefore never use theme accent variants. Instead
+ * every theme maps the four semantic slots below, and our CSS only refers to
+ * those. (This bit us with @webtui/theme-nord, which named its accents
+ * variant-="nord0".."nord15" and shared no colour names with the others.)
+ *
+ * Contrast is measured against each theme's own --background0. gruvbox's raw
+ * red fails AA as text (#fb4934 = 4.29:1), so it is lifted toward the
+ * foreground until it clears. Ratios in the comments were computed with the
+ * same oklab math color-mix() uses.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  :root {
+    --font-family:
+      "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas,
+      "DejaVu Sans Mono", monospace;
+    --font-size: 16px;
+    --line-height: 1.4;
+
+    /* Box frames are decorative. They are never the only affordance marking
+       something interactive, and never a focus ring — --background2 is only
+       1.4-2.5:1 against the page in every theme. Focus rings use --dst-accent. */
+    --box-border-color: var(--background2);
+    --box-border-width: 1px;
+
+    /* Fallback slots, in case a theme is ever applied that we don't map. */
+    --dst-accent: var(--foreground0);
+    --dst-ok: var(--foreground0);
+    --dst-err: var(--foreground0);
+    --dst-dim: var(--foreground2);
+  }
+
+  /* |= matches gruvbox, gruvbox-dark, gruvbox-dark-hard, gruvbox-light, ... */
+  [data-webtui-theme|="gruvbox"] {
+    --dst-accent: var(--gb-yellow); /*  8.69:1 */
+    --dst-ok: var(--gb-green); /*  7.14:1 */
+    --dst-err: color-mix(in oklab, var(--gb-red) 90%, var(--gb-dark-fg1)); /* 4.76:1 */
+  }
+
+  /* Palette defined in theme-neovim.css. Unlike the packaged themes, Neovim's
+     own light accents are already high-contrast on its dark background, so
+     none of these need lifting. */
+  [data-webtui-theme="neovim"] {
+    --dst-accent: var(--nvim-blue); /* 12.24:1 */
+    --dst-ok: var(--nvim-green); /* 14.53:1 */
+    --dst-err: var(--nvim-red); /* 11.63:1 */
+  }
+
+  [data-webtui-theme|="catppuccin"] {
+    --dst-accent: var(--yellow); /* 12.91:1 */
+    --dst-ok: var(--green); /* 11.03:1 */
+    --dst-err: var(--red); /*  7.08:1 — passes as-is */
+  }
+}

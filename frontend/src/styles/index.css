@@ -1,0 +1,44 @@
+/* ─── don't stop typing — stylesheet manifest ────────────────────────────────
+ *
+ * This file contains NOTHING but imports. Every rule lives in one of the files
+ * below, and nothing else in the app imports CSS — so the cascade order is
+ * whatever this list says it is, and only this list.
+ *
+ * Layer order is declared first so WebTUI's own `@layer base, utils, components`
+ * statement becomes a no-op and can't reorder anything. Our rules live in `app`,
+ * declared last, so they win over WebTUI components without !important.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer base, utils, components, app;
+
+/* WebTUI — only the components we actually use */
+@import "@webtui/css/base.css";
+@import "@webtui/css/utils/box.css";
+@import "@webtui/css/components/typography.css";
+@import "@webtui/css/components/button.css";
+@import "@webtui/css/components/input.css";
+@import "@webtui/css/components/badge.css";
+@import "@webtui/css/components/separator.css";
+@import "@webtui/css/components/table.css";
+@import "@webtui/css/components/pre.css";
+
+/* Themes — each registers [data-webtui-theme="..."] blocks */
+@import "@webtui/theme-gruvbox";
+@import "@webtui/theme-catppuccin";
+
+/* Ours */
+/* neovim is ours, not a package — there is no @webtui/theme-neovim */
+@import "./theme-neovim.css";
+
+@import "./fonts.css";
+@import "./tokens.css";
+@import "./base.css";
+@import "./layout.css";
+@import "./cursor.css";
+@import "./theme-switcher.css";
+@import "./home.css";
+@import "./lobby.css";
+@import "./waiting-room.css";
+@import "./editor.css";
+@import "./result.css";
+@import "./leaderboard.css";

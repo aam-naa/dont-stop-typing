@@ -1,10 +1,26 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-webtui-theme="gruvbox-dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <meta name="color-scheme" content="dark" />
+    <title>don't stop typing</title>
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/JetBrainsMono[wght].woff2"
+      crossorigin
+    />
+    <script>
+      // Apply the saved theme before first paint, otherwise every load flashes
+      // the default theme before React mounts.
+      try {
+        var t = localStorage.getItem('dst.theme');
+        if (t) document.documentElement.dataset.webtuiTheme = t;
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

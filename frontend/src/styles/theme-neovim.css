@@ -1,0 +1,58 @@
+/* ─── neovim theme ───────────────────────────────────────────────────────────
+ *
+ * Hand-written rather than an @webtui/theme-* package, because there isn't one.
+ * The palette is Neovim's own, lifted verbatim from the colour table in
+ * src/nvim/highlight_group.c (the Nvim{Dark,Light}* entries), so this is the
+ * real thing rather than an approximation.
+ *
+ * Neovim's dark default sets `Normal guifg=NvimLightGrey2 guibg=NvimDarkGrey2`,
+ * which is where --background0 and --foreground0 below come from.
+ *
+ * Contrast against --background0, all measured:
+ *   foreground0 13.99   foreground1 10.61   foreground2 6.74
+ *   accent      12.24   ok          14.53   err         11.63
+ *   background3  6.74  (boundary; far better than the packaged themes' 1.7-2.5)
+ *   background2  2.31  (decorative box borders only — never a lone affordance)
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  [data-webtui-theme="neovim"] {
+    /* Neovim palette, verbatim */
+    --nvim-dark-grey1: #07080d;
+    --nvim-dark-grey2: #14161b;
+    --nvim-dark-grey3: #2c2e33;
+    --nvim-dark-grey4: #4f5258;
+    --nvim-light-grey1: #eef1f8;
+    --nvim-light-grey2: #e0e2ea;
+    --nvim-light-grey3: #c4c6cd;
+    --nvim-light-grey4: #9b9ea4;
+    --nvim-blue: #a6dbff;
+    --nvim-cyan: #8cf8f7;
+    --nvim-green: #b3f6c0;
+    --nvim-magenta: #ffcaff;
+    --nvim-red: #ffc0b9;
+    --nvim-yellow: #fce094;
+
+    /* WebTUI's own tokens */
+    --background0: var(--nvim-dark-grey2);
+    --background1: var(--nvim-dark-grey3);
+    --background2: var(--nvim-dark-grey4);
+    --background3: var(--nvim-light-grey4);
+
+    --foreground0: var(--nvim-light-grey2);
+    --foreground1: var(--nvim-light-grey3);
+    --foreground2: var(--nvim-light-grey4);
+  }
+}
+
+@layer components {
+  /* The packaged themes each recolour headings and inline code; match that so
+     neovim doesn't look structurally different from its siblings. */
+  [data-webtui-theme="neovim"] :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--nvim-green);
+  }
+
+  [data-webtui-theme="neovim"] :is(p, li, blockquote) code {
+    color: var(--nvim-yellow);
+  }
+}

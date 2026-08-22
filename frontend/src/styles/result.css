@@ -1,0 +1,38 @@
+/* ─── result ─────────────────────────────────────────────────────────────── */
+
+@layer app {
+  .stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25lh;
+  }
+
+  .stat {
+    display: flex;
+    align-items: baseline;
+    gap: 2ch;
+  }
+
+  /* Fixed width + right align is what makes the label column line up — the
+     detail that separates a monospace font from a monospace layout. */
+  .stat-value {
+    font-size: 2rem;
+    line-height: 1;
+    color: var(--dst-accent);
+    font-variant-numeric: tabular-nums;
+    min-inline-size: 8ch;
+    text-align: right;
+  }
+
+  .stat-label {
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .compare {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1lh 2ch;
+  }
+}

@@ -1,0 +1,18 @@
+/* Self-hosted, deliberately.
+ *
+ * Google Fonts and @fontsource both serve JetBrains Mono as six subsets (latin,
+ * latin-ext, cyrillic, cyrillic-ext, greek, vietnamese) whose highest ranges are
+ * U+2C60-2C7F and U+A720-A7FF. Neither covers U+2500-257F (box drawing) or
+ * U+2580-259F (block elements), so every ─ │ ├ █ ▏ on the page would silently
+ * fall back to a system font and desync the character grid.
+ *
+ * The official variable woff2 is 111 KB and carries all 128 box-drawing and all
+ * 32 block glyphs, every one at the same 600/1000em advance as `M`.
+ */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrainsMono[wght].woff2") format("woff2-variations");
+  font-weight: 100 800;
+  font-style: normal;
+  font-display: swap;
+}

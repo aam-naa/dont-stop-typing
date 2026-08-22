@@ -1,0 +1,97 @@
+/* ─── lobby: create or join ──────────────────────────────────────────────── */
+
+@layer app {
+  .lobby-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5lh;
+  }
+
+  /* A shell prompt: "> 12__▉". The ghost underscores show the remaining slots
+     and the block cursor sits on the next one. */
+  .prompt {
+    display: flex;
+    align-items: baseline;
+    gap: 1ch;
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .prompt-sigil {
+    color: var(--dst-accent);
+  }
+
+  .prompt-field {
+    position: relative;
+    display: inline-block;
+    inline-size: 4ch;
+  }
+
+  .prompt-field input {
+    font: inherit;
+    /* letter-spacing MUST stay 0, or the 1ch caret arithmetic below desyncs
+       from the real glyph advance. */
+    letter-spacing: 0;
+    color: var(--foreground0);
+    background: none;
+    border: 0;
+    outline: none;
+    padding: 0;
+    inline-size: 4ch;
+    min-inline-size: 0;
+    /* We draw our own block caret. */
+    caret-color: transparent;
+  }
+
+  /* The caret column comes in as a data attribute rather than an inline style,
+     so no styling lives in the JSX. Four digits means five positions. */
+  .prompt-field[data-col="0"] { --col: 0; }
+  .prompt-field[data-col="1"] { --col: 1; }
+  .prompt-field[data-col="2"] { --col: 2; }
+  .prompt-field[data-col="3"] { --col: 3; }
+  .prompt-field[data-col="4"] { --col: 4; }
+
+  .prompt-ghost,
+  .prompt-field .cursor {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: calc(var(--col, 0) * 1ch);
+    pointer-events: none;
+  }
+
+  .prompt-ghost {
+    color: var(--background3);
+  }
+
+  .lobby-targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1ch;
+    list-style: none;
+    padding: 0;
+  }
+
+  .lobby-targets li::before {
+    content: none;
+  }
+
+  .lobby-targets img {
+    display: block;
+    inline-size: 32px;
+    block-size: 32px;
+    filter: grayscale(1);
+    opacity: 0.35;
+    transition: filter 120ms linear, opacity 120ms linear;
+  }
+
+  .lobby-targets img:hover {
+    filter: none;
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lobby-targets img {
+      transition: none;
+    }
+  }
+}

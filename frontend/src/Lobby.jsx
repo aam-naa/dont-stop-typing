@@ -1,9 +1,7 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "./assets/vite.svg";
-import heroImg from "./assets/image.png";
-import "./App.css";
 import { useNavigate } from "react-router";
+import Shell, { Seg } from "./components/Shell";
+import { TARGETS } from "./targets.js";
 
 function Lobby() {
   const navigate = useNavigate();
@@ -46,32 +44,51 @@ function Lobby() {
   }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Create or Join a Room</h1>
-          <p>
-            A party game for <code>coding</code> enthusiasts - test your{" "}
-            <code>css</code>!
-          </p>
-        </div>
-        <button type="button" onClick={handleCreate}>
-          Create Room
-        </button>
-        <form onSubmit={handleSubmit}>
-          <input name="room" placeholder="1234" />
-          <button type="submit">Join Room</button>
-        </form>
-        {error && <p role="alert">{error}</p>}
-      </section>
+    <Shell layout="column" status={<Seg>lobby</Seg>}>
+      <div className="col">
+        <section className="lobby-section">
+          <h2 className="rule">new game</h2>
+          <div className="actions">
+            <button type="button" onClick={handleCreate}>
+              Create Room
+            </button>
+          </div>
+        </section>
 
-      <section id="spacer"></section>
-    </>
+        <section className="lobby-section">
+          <h2 className="rule">join</h2>
+          {/* The `>` sigil is a CSS-only affordance; the input stays
+              uncontrolled and is still read via FormData on submit. */}
+          <form className="prompt" onSubmit={handleSubmit}>
+            <span className="prompt-sigil" aria-hidden="true">
+              &gt;
+            </span>
+            <label className="prompt-field">
+              <span className="sr-only">room code</span>
+              <input name="room" placeholder="1234" />
+            </label>
+            <button type="submit">Join Room</button>
+          </form>
+        </section>
+
+        {error && (
+          <p className="msg" data-kind="err" role="alert">
+            {error}
+          </p>
+        )}
+
+        <section className="lobby-section">
+          <h2 className="rule">targets</h2>
+          <ul className="lobby-targets">
+            {TARGETS.map((t) => (
+              <li key={t.id}>
+                <img src={t.image} alt={t.name} title={t.name} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    </Shell>
   );
 }
 

@@ -1,31 +1,35 @@
-import { useState } from 'react'
-import './App.css'
-import { useNavigate } from 'react-router'
+import { useNavigate } from "react-router";
+import Shell, { Seg } from "./components/Shell";
+import Wordmark from "./components/Wordmark";
+import Typewriter from "./components/Typewriter";
 
-// testing
+/* Split so the inline <code> survives being revealed a character at a time. */
+const TAGLINE = [
+  { text: "a party game for people who write " },
+  { text: "css", code: true },
+  { text: " by hand." },
+];
+
 function App() {
-  const [count, setCount] = useState(0)
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
-    <>
-    <span class="blinking-cursor">|</span>
-      <section id="center">
-        <div>
-          <h1>Don't Stop Typing</h1>
-          <p>
-            A party game for <code>coding</code> enthusiasts - test your <code>css</code>!
-          </p>
+    <Shell layout="column" status={<Seg tone="accent">ready</Seg>}>
+      {/* Outside .col on purpose: the banner is 176 characters wide and would
+          be clipped by the column's 72ch reading cap. */}
+      <Wordmark />
+
+      <div className="col home">
+        <Typewriter className="home-tagline" parts={TAGLINE} />
+
+        <div className="actions">
+          <button type="button" onClick={() => navigate("/lobby")}>
+            Start Game
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => navigate("/lobby")}
-        >
-          Start Game
-        </button>
-      </section>
-    </>
-  )
+      </div>
+    </Shell>
+  );
 }
 
-export default App
+export default App;

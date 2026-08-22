@@ -1,0 +1,72 @@
+/* ─── element base ───────────────────────────────────────────────────────────
+ * Overrides of WebTUI's own base layer, plus the app-wide document shape.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  html {
+    color-scheme: dark;
+    scrollbar-width: thin;
+    scrollbar-color: var(--background2) transparent;
+  }
+
+  /* WebTUI's base sets `word-break: break-all` on body/html, which is right for
+     TUI labels and wrong for sentences — it hyphenates mid-word. Restore normal
+     wrapping globally and opt back in only where we're measuring in `ch`. */
+  body {
+    word-break: normal;
+    overflow-wrap: break-word;
+    min-height: 100svh;
+  }
+
+  #root {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    /* Was `text-align: center`. A terminal is left-aligned; the few rows that
+       should centre do it themselves in layout.css. */
+    text-align: left;
+  }
+
+  /* WebTUI's typography component already flattens h1-h6 to --font-size. We only
+     add the tracking that makes short uppercase labels legible. */
+  h1,
+  h2,
+  h3 {
+    font-weight: var(--font-weight-bold);
+  }
+
+  ::selection {
+    background: var(--dst-accent);
+    color: var(--background0);
+  }
+
+  /* A 1px hairline rectangle is what a TUI focus box looks like, so this doesn't
+     fight the aesthetic. --dst-accent is 8.0-12.9:1 in every theme; the box
+     border colour would have been 1.4-2.5:1 and is deliberately not used here. */
+  :focus-visible {
+    outline: 1px solid var(--dst-accent);
+    outline-offset: 2px;
+  }
+
+  /* Reverse-video states rely on background+color, which forced-colors modes
+     override — give them a real outline to fall back on. */
+  @media (forced-colors: active) {
+    :focus-visible {
+      outline: 2px solid CanvasText;
+    }
+  }
+
+  a {
+    color: var(--dst-accent);
+  }
+
+  /* Screen-reader-only text, used where a glyph carries the visible meaning. */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

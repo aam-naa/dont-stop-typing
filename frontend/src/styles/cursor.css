@@ -1,0 +1,43 @@
+/* ─── blinking block cursor ──────────────────────────────────────────────────
+ * Replaces .blinking-cursor from the old App.css, which animated `color` from
+ * transparent to a hardcoded `black` (invisible on every one of our themes) and
+ * shipped five vendor-prefixed copies of the same keyframes — -ms-animation and
+ * -o-animation never existed as shipped properties.
+ *
+ * One cursor per screen, on the thing the player should act on. A terminal has
+ * one cursor; two is the tell that this is a web page in costume.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  @keyframes dst-cursor-blink {
+    0%,
+    49% {
+      opacity: 1;
+    }
+    50%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .cursor {
+    display: inline-block;
+    inline-size: 1ch;
+    /* em rather than lh: the tagline runs at line-height 1.4, where a full
+       line-box-tall block reads as a fat bar rather than a caret. 1em matches
+       1lh exactly in the line-height:1 contexts (the room-code prompt). */
+    block-size: 1em;
+    background: var(--dst-accent);
+    vertical-align: -0.15em;
+    /* steps(1, end) so it snaps. An eased opacity fade reads as a "breathing"
+       web cursor; a terminal cursor is on or off. 530ms is xterm's default. */
+    animation: dst-cursor-blink 1.06s steps(1, end) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cursor {
+      animation: none;
+      opacity: 1;
+    }
+  }
+}

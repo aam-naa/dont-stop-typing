@@ -1,0 +1,231 @@
+/* ─── app shell ──────────────────────────────────────────────────────────────
+ * The chrome every route sits inside: a top bar, a content area, a statusline.
+ * Rendered by src/components/Shell.jsx as a react-router layout route.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  .shell {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 100svh;
+    /* NOTE: min-height, so column routes grow with their content and the page
+       scrolls. The wide (editor) route overrides this below — see why there. */
+    /* No horizontal scrollbar: 100vw would include the vertical scrollbar's
+       width, which is the classic way to get a stray 15px of overflow. */
+    inline-size: 100%;
+    overflow-x: hidden;
+  }
+
+  /* The editor is the one route that must fit the viewport exactly rather than
+     grow: its right-hand pane scrolls internally and its submit row is pinned,
+     both of which need an ancestor with a DEFINITE height. `min-height: 100svh`
+     alone is not enough — a min-height still lets the box grow to its content,
+     so the grid row never had a fixed size to shrink into and the statusline and
+     submit button were pushed off the bottom of the screen. */
+  .shell[data-layout="wide"] {
+    height: 100svh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  /* ── top bar ─────────────────────────────────────────────────────────────── */
+
+  .shell-top {
+    display: flex;
+    align-items: center;
+    /* Only the theme switcher lives here now, so pin it right rather than
+       relying on space-between, which would flush a lone child left. */
+    justify-content: flex-end;
+    gap: 2ch;
+    padding: 0.5lh 2ch;
+    border-bottom: 1px solid var(--background2);
+  }
+
+  /* ── content area ────────────────────────────────────────────────────────── */
+
+  .shell-main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    /* min-height:0 so a full-height child (the editor grid) can shrink inside
+       this flex column instead of overflowing the viewport. */
+    min-height: 0;
+    padding: 1lh 2ch;
+  }
+
+  /* Routes that want the centred reading column. */
+  .shell-main[data-layout="column"] {
+    align-items: center;
+    justify-content: center;
+    gap: 1lh;
+  }
+
+  /* Routes that want the whole viewport (the editor). */
+  .shell-main[data-layout="wide"] {
+    padding: 0;
+  }
+
+  .col {
+    inline-size: 100%;
+    /* 1ch on a monospace root IS the cell width, so this wraps text at a real
+       72 characters. Keep tracked/uppercase text out of anything measured in ch. */
+    max-inline-size: 72ch;
+    display: flex;
+    flex-direction: column;
+    gap: 1lh;
+  }
+
+  /* ── section rule: "PLAYERS ──────────────────" ───────────────────────────
+     A terminal has no headlines, it has section rules. The trailing line is a
+     flexible border rather than repeated ─ glyphs, because `content` can't be
+     repeated and any fixed count either overflows or falls short. */
+
+  .rule {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: var(--font-weight-normal);
+  }
+
+  .rule::after {
+    content: "";
+    flex: 1 1 auto;
+    border-top: 1px solid var(--background2);
+  }
+
+  /* ── statusline ──────────────────────────────────────────────────────────── */
+
+  .shell-status {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+    flex-wrap: wrap;
+    padding: 0.5lh 2ch;
+    border-top: 1px solid var(--background2);
+  }
+
+  /* WebTUI's badge paints itself with a gradient plus 1ch end caps, and reads
+     --badge-color/--badge-text. Those are the sanctioned hooks — we set them
+     from our own semantic tokens rather than using the theme packages'
+     variant- names, which differ per theme (see tokens.css). */
+  .seg {
+    --badge-color: var(--background2);
+    --badge-text: var(--foreground0);
+  }
+
+  .seg[data-tone="accent"] {
+    --badge-color: var(--dst-accent);
+    --badge-text: var(--background0);
+  }
+
+  .seg[data-tone="ok"] {
+    --badge-color: var(--dst-ok);
+    --badge-text: var(--background0);
+  }
+
+  .seg[data-tone="err"] {
+    --badge-color: var(--dst-err);
+    --badge-text: var(--background0);
+  }
+
+  .shell-status-spacer {
+    flex: 1 1 auto;
+  }
+
+  /* ── key hint line ───────────────────────────────────────────────────────── */
+
+  .hints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1ch;
+    color: var(--foreground2);
+  }
+
+  .hints kbd {
+    font: inherit;
+    color: var(--foreground0);
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+
+  .hints-sep {
+    color: var(--background3);
+  }
+
+  /* ── shared bits ─────────────────────────────────────────────────────────── */
+
+  /* A labelled frame: the label sits on the top border line, the way a TUI
+     titles a pane. shear-="top" removes the box's top padding so the label can
+     straddle the border. */
+  .pane {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+  }
+
+  .pane-label {
+    align-self: flex-start;
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    background: var(--background0);
+    padding-inline: 1ch;
+    margin-block-end: -0.5lh;
+    margin-inline-start: 1ch;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Status message, e.g. a failed room join. The glyph is the primary cue and
+     the colour is reinforcement — ok and err are only 1.6-2.0:1 against each
+     other, i.e. the same swatch to a red-green colourblind player. */
+  .msg {
+    display: flex;
+    align-items: baseline;
+    gap: 1ch;
+  }
+
+  .msg::before {
+    font-weight: var(--font-weight-bold);
+  }
+
+  .msg[data-kind="err"] {
+    color: var(--dst-err);
+  }
+
+  .msg[data-kind="err"]::before {
+    content: "!";
+  }
+
+  .msg[data-kind="ok"] {
+    color: var(--dst-ok);
+  }
+
+  .msg[data-kind="ok"]::before {
+    content: "+";
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1ch;
+    align-items: center;
+  }
+
+  @media (max-width: 640px) {
+    .shell-top,
+    .shell-status {
+      padding-inline: 1ch;
+    }
+
+    .shell-main:not([data-layout="wide"]) {
+      padding-inline: 1ch;
+    }
+  }
+}

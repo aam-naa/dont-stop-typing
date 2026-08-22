@@ -1,0 +1,45 @@
+/* ─── theme switcher ─────────────────────────────────────────────────────────
+ * Reads like typer's settings bar: active item in reverse video, the rest dim.
+ * Reverse video is the cue rather than colour alone, because --dst-accent and
+ * --foreground2 sit at only 1.2-1.8:1 against each other.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  .themes {
+    display: flex;
+    align-items: center;
+    gap: 1ch;
+  }
+
+  .themes-label {
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .theme-btn {
+    font: inherit;
+    color: var(--foreground2);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0 1ch;
+    height: 1lh;
+    cursor: pointer;
+  }
+
+  .theme-btn:hover {
+    color: var(--dst-accent);
+  }
+
+  .theme-btn[aria-pressed="true"] {
+    background: var(--dst-accent);
+    color: var(--background0);
+  }
+
+  @media (max-width: 640px) {
+    .themes-label {
+      display: none;
+    }
+  }
+}

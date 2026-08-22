@@ -1,0 +1,172 @@
+/* ─── editor / playground ────────────────────────────────────────────────────
+ *
+ * Replaces the Tailwind utilities that used to live in Playground.jsx.
+ *
+ * THE LOAD-BEARING PART is the height chain. Monaco renders at height:100%, so
+ * every ancestor must resolve to a definite height or the editor collapses to
+ * zero. The chain is:
+ *
+ *   #root            flex column, min-height 100svh   (base.css)
+ *   .shell           flex column, flex 1              (layout.css)
+ *   .shell-main      flex 1, min-height 0             (layout.css)
+ *   .editor-grid     flex 1, min-height 0, grid       (here)
+ *   .editor-pane     grid item, stretches, min-height 0
+ *   .editor-host     flex 1, min-height 0             <- Monaco's parent
+ *
+ * Every `min-height: 0` is required: a flex/grid child defaults to min-height
+ * auto, which refuses to shrink below its content and pushes the layout past
+ * the viewport instead of letting the editor scroll internally.
+ * ─────────────────────────────────────────────────────────────────────────── */
+
+@layer app {
+  .editor-grid {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    /* minmax(0, 1fr), not the implicit `auto` row. An auto row is floored at its
+       content height, so the tall right-hand pane pushed the grid past the
+       viewport and carried the statusline — and the submit button — off-screen
+       instead of scrolling inside its own pane. */
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .editor-pane {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    min-width: 0;
+    /* The panes touch and are divided by a rule. Terminals split with a line,
+       not with whitespace. */
+    border-inline-end: 1px solid var(--background2);
+  }
+
+  .editor-pane:last-child {
+    border-inline-end: 0;
+  }
+
+  .editor-host {
+    flex: 1 1 auto;
+    min-height: 0;
+    /* Was bg-[#1e1e1e] — VS Code's own background, hardcoded, which clashed
+       with all three themes. */
+    background: var(--background0);
+  }
+
+  /* ── right-hand side: reference + preview ────────────────────────────────── */
+
+  /* Two rows: the canvases scroll in the first, the submit row is pinned in the
+     second so it is always reachable without scrolling. */
+  .editor-side {
+    display: grid;
+    grid-template-rows: minmax(0, 1fr) auto;
+    justify-items: center;
+    gap: 1lh;
+    padding: 1lh 2ch;
+    min-height: 0;
+  }
+
+  .editor-previews {
+    min-height: 0;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1lh;
+  }
+
+  /* Exactly 300x300, matching the canvas SHELL() renders into and the size the
+     reference PNGs were exported at. A box-shadow rather than a border, because
+     a border would eat into the 300px and shift the comparison. */
+  .canvas {
+    inline-size: 300px;
+    block-size: 300px;
+    flex: 0 0 auto;
+    box-shadow: 0 0 0 1px var(--background2);
+  }
+
+  .canvas > img,
+  .canvas > iframe {
+    display: block;
+    inline-size: 300px;
+    block-size: 300px;
+    border: 0;
+  }
+
+  /* The page runs a dark colour-scheme; a sandboxed srcDoc document can inherit
+     a dark UA canvas, which would render the player's work on a different
+     background than the reference was exported on. */
+  .canvas > iframe {
+    color-scheme: light;
+    background: #fff;
+  }
+
+  .editor-figure {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25lh;
+    margin: 0;
+    align-items: flex-start;
+  }
+
+  .editor-figure figcaption {
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .timer {
+    font-variant-numeric: tabular-nums;
+    color: var(--dst-accent);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* The `!` prefix is the primary warning cue. A player who can't distinguish
+     the accent from the error colour must not lose the round to a hue change. */
+  .timer[data-state="critical"] {
+    color: var(--dst-err);
+  }
+
+  .timer[data-state="critical"]::before {
+    content: "!";
+    margin-inline-end: 1ch;
+  }
+
+  /* ── stacked layout ──────────────────────────────────────────────────────── */
+
+  @media (max-width: 900px) {
+    /* Stacked: let the page scroll again rather than cramming both panes into
+       one viewport. */
+    .shell[data-layout="wide"] {
+      height: auto;
+      min-height: 100svh;
+      overflow: visible;
+    }
+
+    .shell-main[data-layout="wide"] {
+      overflow-y: visible;
+    }
+
+    .editor-grid {
+      grid-template-columns: 1fr;
+      /* Page scrolls at this size, so let both rows take their content. */
+      grid-template-rows: auto auto;
+    }
+
+    .editor-previews {
+      overflow-y: visible;
+    }
+
+    .editor-pane {
+      border-inline-end: 0;
+      border-block-end: 1px solid var(--background2);
+    }
+
+    .editor-pane:first-child .editor-host {
+      /* Give Monaco a definite height once the grid row is no longer bounded
+         by the viewport. */
+      block-size: 55svh;
+    }
+  }
+}
