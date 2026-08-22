@@ -6,6 +6,8 @@ import Lobby from './Lobby.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Editor from './Editor.jsx'
 import WaitingRoom from './WaitingRoom.jsx'
+import ResultPage from './ResultPage.jsx'
+import LeaderBoard from './LeaderBoard.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,6 +17,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/lobby" element={<Lobby/>} />
         <Route path ="/editor" element={<Editor/>} />
         <Route path="/room/:roomId" element={<WaitingRoom/>} />
+        <Route path="/result" element={<ResultPage />} />
+        <Route path="leaderboard" element={<LeaderBoard />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
