@@ -1,3 +1,5 @@
+import os
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 import random
@@ -5,6 +7,16 @@ import random
 rooms = {}
 
 app = FastAPI()
+
+static_dir = f"/frontend"
+if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
+    static_dir = f"frontend"
+
+app.mount(
+    "/fronted",
+    StaticFiles(directory=static_dir, html=False),
+    name="frontend"
+)
 
 app.add_middleware(
     CORSMiddleware,
