@@ -8,12 +8,12 @@ rooms = {}
 
 app = FastAPI()
 
-static_dir = f"/frontend"
+static_dir = f"/frontend/dist"
 if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
-    static_dir = f"frontend"
+    static_dir = f"frontend/dist"
 
 app.mount(
-    "/fronted",
+    "/frontend",
     StaticFiles(directory=static_dir, html=False),
     name="frontend"
 )
