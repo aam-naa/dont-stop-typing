@@ -1,7 +1,6 @@
 import Editor from '@monaco-editor/react';
 import arch from '../assets/arch.png';
 import {useState} from 'react';
-import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 
 const Playground = ({ code: defaultCode }) => {
     const [code, setCode] = useState(defaultCode);
@@ -27,11 +26,13 @@ const Playground = ({ code: defaultCode }) => {
       </div>
       <div className="flex flex-col gap-6 w-full max-w-3xl m-auto h-full min-h-0 p-6">
         <img src={arch} className="flex-1 min-h-0 w-full object-contain" />
-        <div className="flex-1 min-h-0 w-full overflow-auto">
-          <LiveProvider code={code} scope={{ arch }}>
-            <LivePreview />
-            <LiveError />
-          </LiveProvider>
+        <div className="flex-1 min-h-0 w-full overflow-hidden bg-white">
+          <iframe
+            title="preview"
+            srcDoc={code}
+            sandbox=""
+            className="w-full h-full border-0"
+          />
         </div>
       </div>
     </div>
