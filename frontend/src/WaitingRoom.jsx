@@ -48,19 +48,26 @@ const WaitingRoom = () => {
       <ul className="player-grid">
 
         {Array.from({ length: NUM_PLAYERS }, (_, i) => {
-          const status = players[String(i)] ?? "waiting"
-          const isConnected = status === "connected"
-          return (
+        const status = players[String(i)] ?? "waiting"
+        const isConnected = status === "connected"
+        const isReserved = status === "reserved"
+        return (
             <li
-              key={i}
-              className={`player-slot${i === role ? " is-you" : ""}${isConnected ? " is-connected" : ""}`}
+            key={i}
+            className={`player-slot${i === role ? " is-you" : ""}${isConnected ? " is-connected" : ""}${isReserved ? " is-reserved" : ""}`}
             >
-              <span className="player-number">{i + 1}</span>
-              <span className="player-label">
-                {i === role ? "You" : isConnected ? "Connected" : "Waiting…"}
-              </span>
+            <span className="player-number">{i + 1}</span>
+            <span className="player-label">
+                {i === role
+                ? "You"
+                : isConnected
+                ? "Connected"
+                : isReserved
+                ? "Reserved"
+                : "Waiting…"}
+            </span>
             </li>
-          )
+        )
         })}
 
       </ul>
