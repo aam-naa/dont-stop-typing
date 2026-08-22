@@ -13,11 +13,9 @@ const WaitingRoom = () => {
 
   // players[i] will be "connected" | "reserved" | "waiting"
   const [players, setPlayers] = useState({})
-  const [countdown, setCountdown] = useState();
   const wsRef = useRef(null)
 
   useEffect(() => {
-    countdownInterval = null;
     const wsUrl =
       import.meta.env.VITE_API_URL.replace(/^http/, "ws") +
       `/ws/${roomId}/${role}`
@@ -31,18 +29,7 @@ const WaitingRoom = () => {
       }
       if (data.type === "all_connected") {
         // TODO: navigate to the actual game screen once everyone's in
-         let count = 5
-      setCountdown(count)
-      countdownInterval = setInterval(() => {
-        console.log(count)
-        count -= 1
-        if (count <= 0) {
-          clearInterval(countdownInterval)
-          navigate("/editor")
-        } else {
-          setCountdown(count)
-        }
-      }, 1000)
+        navigate("/editor");
       }
     }
 
