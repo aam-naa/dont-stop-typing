@@ -15,7 +15,6 @@ createRoot(document.getElementById('root')).render(
         <Route path="/lobby" element={<Lobby/>} />
         <Route path ="/editor" element={<Editor/>} />
         <Route path="/room/:roomId" element={<WaitingRoom/>} />
-        <Route path="/editor" element={<Editor/>}/>
       </Routes>
     </BrowserRouter>
   </StrictMode>,
