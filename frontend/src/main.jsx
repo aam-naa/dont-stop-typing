@@ -16,7 +16,6 @@ createRoot(document.getElementById('root')).render(
         <Route path="/create_room" element={<CreateRoom/>} />
         <Route path="/join_room" element={<JoinRoom/>} />
       </Routes>
-      <App />
     </BrowserRouter>
   </StrictMode>,
 )
