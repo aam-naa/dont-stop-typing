@@ -52,6 +52,7 @@ async def join_room(room_id: str):
 
 @app.websocket("/ws/{room_id}/{role}")
 async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
+    await ws.accept()
     if role not in range(num_players):
         await ws.close(code=4040)
         return
@@ -67,7 +68,6 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
         await ws.close(code=4060)
         return
 
-    await ws.accept()
     room[role] = ws
     await broadcast_room_status(room_id)
     await notify_room_status(ws, room_id)
