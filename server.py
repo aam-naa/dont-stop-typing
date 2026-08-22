@@ -52,6 +52,7 @@ async def join_room(room_id: str):
 
 @app.websocket("/ws/{room_id}/{role}")
 async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
+    await ws.accept()
     if role not in range(num_players):
         await ws.close(code=4040)
         return
@@ -67,10 +68,9 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
         await ws.close(code=4060)
         return
 
-    await ws.accept()
     room[role] = ws
     await broadcast_room_status(room_id)
-    await notify_room_status(ws, room_id)
+#    await notify_room_status(ws, room_id)
 
     try:
         while True:
@@ -81,13 +81,13 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
         await broadcast_room_status(room_id)
 
 
-async def notify_room_status(ws:WebSocket, room_id: str):
-    room = rooms[room_id]
-    for player in room:
-        if not isinstance(room[player], WebSocket):
-            ws.send_json({"type": "room_status"})
-            return
-    await ws.send_json({"type": "all_connected"})
+#async def notify_room_status(ws:WebSocket, room_id: str):
+    #room = rooms[room_id]
+    #for player in room:
+        #if not isinstance(room[player], WebSocket):
+            #ws.send_json({"type": "room_status"})
+            #return
+    #await ws.send_json({"type": "all_connected"})
 
 async def broadcast_room_status(room_id: str):
     room = rooms.get(room_id)
@@ -110,3 +110,11 @@ async def broadcast_room_status(room_id: str):
                 await state.send_json(status)
             except Exception:
                 pass  # client may have just disconnected; ignore
+
+    if all(isinstance(state, WebSocket) for state in room.values()):
+        for state in room.values():
+            if isinstance(state, WebSocket):
+                try:
+                    await state.send_json({"type": "all_connected"})
+                except Exception:
+                    pass
