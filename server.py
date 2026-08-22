@@ -7,6 +7,9 @@ import random
 
 rooms = {}
 
+# Placeholder for a slot handed out by /join_room but not yet connected.
+RESERVED = "reserved"
+
 app = FastAPI()
 
 static_dir = f"/frontend/dist"
@@ -52,6 +55,21 @@ def create_room(num_players=5):
         room[i] = None
     return {"room_id": code}
 
+@app.post("/join_room/{room_id}")
+def join_room(room_id: str):
+    room = rooms.get(room_id)
+    if room is None:
+        raise HTTPException(status_code=404, detail="Room not found")
+    free = [r for r, ws in room.items() if ws is None]
+    if not free:
+        raise HTTPException(status_code=409, detail="Room is full")
+
+    # Hold the slot so the next caller gets a different role. The websocket
+    # swaps this for the real connection when the player actually shows up.
+    role = free[0]
+    room[role] = RESERVED
+    return {"room_id": room_id, "role": role}
+
 @app.websocket("/ws/{room_id}/{role}")
 async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
     if role not in range(num_players):
@@ -64,7 +82,8 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
 
     room = rooms[room_id]
 
-    if room[role] is not None:
+    # Free or merely reserved is fine; an active connection is not.
+    if isinstance(room[role], WebSocket):
         await ws.close(code=4060)
         return
     
@@ -83,6 +102,6 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
 async def notify_room_status(ws:WebSocket, room_id: str):
     room = rooms[room_id]
     for player in room:
-        if room[player] is None:
+        if not isinstance(room[player], WebSocket):
             return
     await ws.send_json({"type": "all_connected"})
