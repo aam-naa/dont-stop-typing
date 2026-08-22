@@ -30,48 +30,72 @@ def join_room(room_id: str):
     room = rooms.get(room_id)
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
-    free = [r for r, wss in room.items() if wss is None]
+    free = [r for r, ws in room.items() if ws is None]
     if not free:
         raise HTTPException(status_code=409, detail="Room is full")
 
     # Hold the slot so the next caller gets a different role. The websocket
-    # swaps this for the real connection when the player actually showss up.
+    # swaps this for the real connection when the player actually shows up.
     role = free[0]
     room[role] = RESERVED
     return {"room_id": room_id, "role": role}
 
-@app.websocket("/wss/{room_id}/{role}")
-async def websocket_endpt(wss: WebSocket, room_id, role:int, num_players=5):
+@app.websocket("/ws/{room_id}/{role}")
+async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
     if role not in range(num_players):
-        await wss.close(code=4040)
+        await ws.close(code=4040)
         return
 
     if room_id not in rooms:
-        await wss.close(code=4050)
+        await ws.close(code=4050)
         return
 
     room = rooms[room_id]
 
     # Free or merely reserved is fine; an active connection is not.
     if isinstance(room[role], WebSocket):
-        await wss.close(code=4060)
+        await ws.close(code=4060)
         return
 
-    await wss.accept()
-    room[role] = wss
-    await notify_room_status(wss, room_id)
+    await ws.accept()
+    room[role] = ws
+    await broadcast_room_status(room_id)
+    # await notify_room_status(ws, room_id)
 
     try:
         while True:
-            data = await wss.receive_json()
+            data = await ws.receive_json()
             print(f"[{room_id}/{role}] received: {data}")
     except WebSocketDisconnect:
         room[role] = None
+        await broadcast_room_status(room_id)
 
 
-async def notify_room_status(wss:WebSocket, room_id: str):
+async def notify_room_status(ws:WebSocket, room_id: str):
     room = rooms[room_id]
     for player in room:
         if not isinstance(room[player], WebSocket):
             return
-    await wss.send_json({"type": "all_connected"})
+    await ws.send_json({"type": "all_connected"})
+
+async def broadcast_room_status(room_id: str):
+    room = rooms.get(room_id)
+    if room is None:
+        return
+    status = {
+        "type": "room_status",
+        "players": {
+            str(role): (
+                "connected" if isinstance(state, WebSocket)
+                else "reserved" if state == RESERVED
+                else "waiting"
+            )
+            for role, state in room.items()
+        },
+    }
+    for state in room.values():
+        if isinstance(state, WebSocket):
+            try:
+                await state.send_json(status)
+            except Exception:
+                pass  # client may have just disconnected; ignore
