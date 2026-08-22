@@ -39,7 +39,6 @@ async def join_room(room_id: str):
     role = free[0]
     room[role] = RESERVED
     await broadcast_room_status(room_id)
-    await notify_room_status(ws, room_id)
     return {"room_id": room_id, "role": role}
 
 @app.websocket("/ws/{room_id}/{role}")
