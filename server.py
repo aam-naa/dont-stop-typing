@@ -1,9 +1,8 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 import random
-import os
-
+from fastapi.staticfiles import StaticFiles
 rooms = {}
 
 room_targets = {}
@@ -16,17 +15,17 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["https://dont-stop-typing-game.vercel.app"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 @app.get("/")
-async def root():
-    return {"message":"hey"}
+def health():
+    return {"status":"healthy"}
 
 @app.post("/create_room")
-def create_room(num_players=5):
+def create_room(num_players=2):
     code = str(random.randint(1000, 9999))
     rooms[code] = {}
     room = rooms[code]
@@ -36,7 +35,7 @@ def create_room(num_players=5):
     return {"room_id": code}
 
 @app.post("/join_room/{room_id}")
-def join_room(room_id: str):
+async def join_room(room_id: str):
     room = rooms.get(room_id)
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -48,6 +47,7 @@ def join_room(room_id: str):
     # swaps this for the real connection when the player actually shows up.
     role = free[0]
     room[role] = RESERVED
+    await broadcast_room_status(room_id)
     return {"room_id": room_id, "role": role}
 
 @app.websocket("/ws/{room_id}/{role}")
@@ -69,6 +69,7 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
 
     await ws.accept()
     room[role] = ws
+    await broadcast_room_status(room_id)
     await notify_room_status(ws, room_id)
 
     try:
@@ -77,11 +78,35 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
             print(f"[{room_id}/{role}] received: {data}")
     except WebSocketDisconnect:
         room[role] = None
+        await broadcast_room_status(room_id)
 
 
 async def notify_room_status(ws:WebSocket, room_id: str):
     room = rooms[room_id]
     for player in room:
         if not isinstance(room[player], WebSocket):
+            ws.send_json({"type": "room_status"})
             return
     await ws.send_json({"type": "all_connected"})
+
+async def broadcast_room_status(room_id: str):
+    room = rooms.get(room_id)
+    if room is None:
+        return
+    status = {
+        "type": "room_status",
+        "players": {
+            str(role): (
+                "connected" if isinstance(state, WebSocket)
+                else "reserved" if state == RESERVED
+                else "waiting"
+            )
+            for role, state in room.items()
+        },
+    }
+    for state in room.values():
+        if isinstance(state, WebSocket):
+            try:
+                await state.send_json(status)
+            except Exception:
+                pass  # client may have just disconnected; ignore
