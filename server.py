@@ -26,7 +26,7 @@ def create_room(num_players=5):
     return {"room_id": code}
 
 @app.post("/join_room/{room_id}")
-def join_room(room_id: str):
+async def join_room(room_id: str):
     room = rooms.get(room_id)
     if room is None:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -38,6 +38,7 @@ def join_room(room_id: str):
     # swaps this for the real connection when the player actually shows up.
     role = free[0]
     room[role] = RESERVED
+    await broadcast_room_status(room_id)
     return {"room_id": room_id, "role": role}
 
 @app.websocket("/ws/{room_id}/{role}")
