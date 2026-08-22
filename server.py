@@ -80,15 +80,6 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
         room[role] = None
         await broadcast_room_status(room_id)
 
-
-#async def notify_room_status(ws:WebSocket, room_id: str):
-    #room = rooms[room_id]
-    #for player in room:
-        #if not isinstance(room[player], WebSocket):
-            #ws.send_json({"type": "room_status"})
-            #return
-    #await ws.send_json({"type": "all_connected"})
-
 async def broadcast_room_status(room_id: str):
     room = rooms.get(room_id)
     if room is None:
@@ -112,9 +103,10 @@ async def broadcast_room_status(room_id: str):
                 pass  # client may have just disconnected; ignore
 
     if all(isinstance(state, WebSocket) for state in room.values()):
-        for state in room.values():
+        pic_ids = random.sample(range(0, 10), 10)
+        for i, state in enumerate(room.values()):
             if isinstance(state, WebSocket):
                 try:
-                    await state.send_json({"type": "all_connected"})
+                    await state.send_json({"type": "all_connected", "pic_id": pic_ids[i]})
                 except Exception:
                     pass
