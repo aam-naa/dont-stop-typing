@@ -5,21 +5,17 @@ import heroImg from "./assets/image.png";
 import "./App.css";
 import { useNavigate } from "react-router";
 
-function handleSubmit(e) {
-  const navigate = useNavigate();
-  // Prevent the browser from reloading the page
-  e.preventDefault();
-
-  // Read the form data
-  const form = e.target;
-  const formData = new FormData(form);
-  const joinCode = formData.get("room");
-  navigate(`/room/'${joinCode}'`)
-  console.log(joinCode);
-}
-
 function Lobby() {
   const navigate = useNavigate();
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    // Read the form data
+    const form = e.target;
+    const formData = new FormData(form);
+    const joinCode = formData.get("room");
+    navigate(`/room/${joinCode}`);
+  }
 
   return (
     <>

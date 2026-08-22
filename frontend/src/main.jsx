@@ -3,8 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 import Lobby from './Lobby.jsx'
-import CreateRoom from './CreateRoom.jsx'
-import JoinRoom from './JoinRoom.jsx'
+import WaitingRoom from './WaitingRoom.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 createRoot(document.getElementById('root')).render(
@@ -13,8 +12,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route path="/" element={<App/>} />
         <Route path="/lobby" element={<Lobby/>} />
-        <Route path="/create_room" element={<CreateRoom/>} />
-        <Route path="/join_room" element={<JoinRoom/>} />
+        <Route path="/room/:roomId" element={<WaitingRoom/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,
