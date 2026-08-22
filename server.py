@@ -6,6 +6,21 @@ import random
 import os
 from fastapi.staticfiles import StaticFiles
 
+
+
+rooms = {}
+
+RESERVED = "reserved"
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Determine the path to the built frontend
 static_dir = f"/frontend/dist"
 if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
@@ -17,24 +32,6 @@ app.mount(
     "/frontend",
     StaticFiles(directory=static_dir, html=True),
     name="frontend"
-)
-
-rooms = {}
-
-RESERVED = "reserved"
-
-app = FastAPI()
-
-# Absolute, derived from this file's location, so it resolves the same
-# regardless of the working directory the host launches uvicorn from.
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.getenv("STATIC_DIR", os.path.join(BASE_DIR, "frontend", "dist"))
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
 )
 
 @app.post("/create_room")
