@@ -25,13 +25,17 @@ const Playground = ({ code: defaultCode }) => {
             />
       </div>
       <div className="flex flex-col items-center justify-center gap-20 h-full min-h-0 p-6 overflow-auto">
-        <img
-          src={arch}
-          alt="Target"
-          className="size-[300px] shrink-0 "
-        />
-        <div className="size-[300px] shrink-0 overflow-hidden  bg-white">
-          <iframe
+        <div className="flex flex-col items-center gap-2 shrink-0">
+          <p>Reference Image</p>
+          <img
+            src={arch}
+            alt="Target"
+            className="size-[300px]"
+          />
+        </div>
+        <div className="flex flex-col gap-2 size-[300px] shrink-0 overflow-hidden">
+            <p>Preview</p>
+            <iframe
             title="preview"
             srcDoc={code}
             sandbox=""
