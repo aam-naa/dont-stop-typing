@@ -7,7 +7,7 @@ import {useLocation} from 'react-router-dom';
 import {TARGETS} from './targets.js';
 
 const GAME_DURATION_MS = 5 * 60 * 1000; // 5 minutes
-const INTERVAL_MS = 6 * 1000; // 6 seconds 
+const INTERVAL_MS = 60 * 1000; // 1 minute 
 const MAX_CALLS = 5;
 
 const renderer = ({ minutes, seconds }) => (
