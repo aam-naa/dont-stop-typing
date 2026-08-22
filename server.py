@@ -1,5 +1,4 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import random
@@ -16,19 +15,6 @@ app.add_middleware(
     allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
-)
-
-# Determine the path to the built frontend
-static_dir = f"/frontend/dist"
-if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
-    static_dir = f"frontend/dist"
-
-# Mount the directory. 
-# html=False means it won't automatically search for index.html; we handle that manually.
-app.mount(
-    "/frontend",
-    StaticFiles(directory=static_dir, html=True),
-    name="frontend"
 )
 
 @app.get("/")
