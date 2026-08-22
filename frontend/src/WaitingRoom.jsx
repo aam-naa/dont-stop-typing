@@ -29,7 +29,7 @@ const WaitingRoom = () => {
       }
       if (data.type === "all_connected") {
         // TODO: navigate to the actual game screen once everyone's in
-        setTimeout(3000)
+        setTimeout(10000)
         console.log("timed out for 3000")
         navigate("/editor");
       }
