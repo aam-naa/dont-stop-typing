@@ -288,6 +288,6 @@ body{background:#F2EFE6}
   }
 ];
 
-export { TARGETS, SHELL, DEFAULT_STARTER };
+export default { TARGETS, SHELL, DEFAULT_STARTER };
 
 if (typeof module !== "undefined") module.exports = { TARGETS, SHELL, DEFAULT_STARTER };
