@@ -1,39 +1,19 @@
 import os
-from fastapi.staticfiles import StaticFiles
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
-from core.helper_functions.react_helper import get_file_response_or_404
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import random
 
 rooms = {}
 
-# Placeholder for a slot handed out by /join_room but not yet connected.
 RESERVED = "reserved"
 
 app = FastAPI()
 
-static_dir = f"/frontend/dist"
-if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
-    static_dir = f"frontend/dist"
-
-app.mount(
-    "/frontend",
-    StaticFiles(directory=static_dir, html=False),
-    name="frontend"
-)
-
-@app.get("/{full_path:path}")
-async def frontend(full_path: str):
-    frontend_dir = "/frontend/dist"
-    
-    # Handle local dev paths
-    if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
-        frontend_dir = "frontend/dist"
-
-    return get_file_response_or_404(
-        os.path.join(frontend_dir, full_path), # Try to serve the specific file
-        os.path.join(frontend_dir, "index.html") # Fallback to index.html
-    )
+# Absolute, derived from this file's location, so it resolves the same
+# regardless of the working directory the host launches uvicorn from.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.getenv("STATIC_DIR", os.path.join(BASE_DIR, "frontend", "dist"))
 
 app.add_middleware(
     CORSMiddleware,
@@ -41,10 +21,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-@app.get("/")
-async def root():
-    return {"message":"hey"}
 
 @app.post("/create_room")
 def create_room(num_players=5):
@@ -86,7 +62,7 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
     if isinstance(room[role], WebSocket):
         await ws.close(code=4060)
         return
-    
+
     await ws.accept()
     room[role] = ws
     await notify_room_status(ws, room_id)
@@ -105,3 +81,18 @@ async def notify_room_status(ws:WebSocket, room_id: str):
         if not isinstance(room[player], WebSocket):
             return
     await ws.send_json({"type": "all_connected"})
+
+
+# Registered last on purpose: Starlette matches routes in order, so this
+# catch-all must not shadow any API route above it.
+@app.get("/{full_path:path}")
+async def frontend(full_path: str):
+    candidate = os.path.normpath(os.path.join(STATIC_DIR, full_path))
+
+    # Stop a crafted path (../../etc/passwd) from escaping the build dir.
+    if candidate.startswith(STATIC_DIR) and os.path.isfile(candidate):
+        return FileResponse(candidate)
+
+    # Unknown paths fall back to index.html so client-side routes like
+    # /room/1234 survive a page refresh.
+    return FileResponse(os.path.join(STATIC_DIR, "index.html"))
