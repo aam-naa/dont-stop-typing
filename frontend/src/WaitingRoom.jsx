@@ -46,6 +46,7 @@ const WaitingRoom = () => {
       }
       if (data.type === "all_connected") {
         console.log("hello i am under the water")
+        console.log(data)
         setStartAt(Date.now() + 5000);
       }
     };
@@ -84,7 +85,7 @@ const WaitingRoom = () => {
 
       <ul className="player-grid">
         {Array.from({ length: NUM_PLAYERS }, (_, i) => {
-          console.log(players);
+          // console.log(players);
           const status = players[String(i)] ?? "waiting";
           const isConnected = status === "connected";
           const isReserved = status === "reserved";
