@@ -5,20 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 import random
 import os
 from fastapi.staticfiles import StaticFiles
-
-# Determine the path to the built frontend
-static_dir = f"/frontend/dist"
-if os.getenv("IS_LOCAL_STATIC_DIR") == "true":
-    static_dir = f"frontend/dist"
-
-# Mount the directory. 
-# html=False means it won't automatically search for index.html; we handle that manually.
-app.mount(
-    "/frontend",
-    StaticFiles(directory=static_dir, html=True),
-    name="frontend"
-)
-
 rooms = {}
 
 RESERVED = "reserved"
