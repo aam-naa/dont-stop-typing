@@ -5,8 +5,7 @@ import heroImg from './assets/image.png'
 import './App.css'
 import { useNavigate } from 'react-router'
 
-function App() {
-  const [count, setCount] = useState(0)
+function Lobby() {
   const navigate = useNavigate()
 
   return (
@@ -18,17 +17,24 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Don't Stop Typing</h1>
+          <h1>Create or Join a Room</h1>
           <p>
             A party game for <code>coding</code> enthusiasts - test your <code>css</code>!
           </p>
         </div>
         <button
           type="button"
-          onClick={() => navigate("/lobby")}
+          onClick={() => navigate("/create_room")}
         >
-          Start Game
+          Create Room 
         </button>
+        <button
+          type="button"
+          onClick={() => navigate("/join_room")}
+        >
+          Join Room 
+        </button>
+
       </section>
 
       <div className="ticks"></div>
@@ -120,4 +126,4 @@ function App() {
   )
 }
 
-export default App
+export default Lobby 

@@ -5,7 +5,7 @@ import heroImg from './assets/image.png'
 import './App.css'
 import { useNavigate } from 'react-router'
 
-function App() {
+function JoinRoom() {
   const [count, setCount] = useState(0)
   const navigate = useNavigate()
 
@@ -18,7 +18,7 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Don't Stop Typing</h1>
+          <h1>Join Room</h1>
           <p>
             A party game for <code>coding</code> enthusiasts - test your <code>css</code>!
           </p>
@@ -120,4 +120,4 @@ function App() {
   )
 }
 
-export default App
+export default JoinRoom 
