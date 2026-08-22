@@ -7,23 +7,42 @@ import { useNavigate } from "react-router";
 
 function Lobby() {
   const navigate = useNavigate();
+  const [error, setError] = useState("");
 
   async function handleCreate() {
     const res = await fetch("http://127.0.0.1:8000/create_room", {
       method: "POST",
     });
     const { room_id } = await res.json();
-    navigate(`/room/${room_id}`);
+
+    // Claim a slot in the room we just made, so the host gets a role too.
+    const joinRes = await fetch(`http://127.0.0.1:8000/join_room/${room_id}`, {
+      method: "POST",
+    });
+    const { role } = await joinRes.json();
+
+    setError("");
+    navigate(`/room/${room_id}?role=${role}`);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     // Read the form data
     const form = e.target;
     const formData = new FormData(form);
     const joinCode = formData.get("room");
-    navigate(`/room/${joinCode}`);
-    console.log(joinCode);
+    const res = await fetch(`http://127.0.0.1:8000/join_room/${joinCode}`, {
+      method: "POST",
+    });
+
+    if (!res.ok){
+      const {detail} = await res.json();
+      setError(detail);
+      return;
+    }
+    const {room_id, role} = await res.json();
+    setError("");
+    navigate(`/room/${room_id}?role=${role}`);
   }
 
   return (
@@ -45,9 +64,10 @@ function Lobby() {
           Create Room
         </button>
         <form onSubmit={handleSubmit}>
-          <input name="room" />
+          <input name="room" placeholder="1234" />
           <button type="submit">Join Room</button>
         </form>
+        {error && <p role="alert">{error}</p>}
       </section>
 
       <section id="spacer"></section>
