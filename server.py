@@ -5,6 +5,10 @@ import random
 from fastapi.staticfiles import StaticFiles
 rooms = {}
 
+room_targets = {}
+
+NUM_TARGETS = 10
+
 RESERVED = "reserved"
 
 app = FastAPI()
@@ -27,6 +31,7 @@ def create_room(num_players=2):
     room = rooms[code]
     for i in range(num_players):
         room[i] = None
+    room_targets[code] = random.sample(range(NUM_TARGETS), num_players)
     return {"room_id": code}
 
 @app.post("/join_room/{room_id}")
