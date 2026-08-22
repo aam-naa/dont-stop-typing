@@ -1,4 +1,4 @@
-body, h1 {
+body, h1, h2 {
   font-family: monospace;
   font-weight: 1000;
 }
@@ -57,4 +57,60 @@ body, h1 {
   50% {
     color: black;
   }
+}
+:root {
+  --player: #2f9e44;
+  --player-bg: rgba(47, 158, 68, 0.12);
+  --player-border: rgba(47, 158, 68, 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --player: #51cf66;
+    --player-bg: rgba(81, 207, 102, 0.15);
+    --player-border: rgba(81, 207, 102, 0.6);
+  }
+}
+
+.player-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin: 32px 0;
+}
+
+.player-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 110px;
+  aspect-ratio: 1;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  background: var(--code-bg);
+  color: var(--text);
+  font-family: var(--mono);
+}
+
+.player-slot.is-you {
+  border-style: solid;
+  border-color: var(--player-border);
+  background: var(--player-bg);
+  color: var(--player);
+}
+
+.player-number {
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.player-label {
+  font-size: 13px;
+  letter-spacing: 0.5px;
 }
