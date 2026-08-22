@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react'
-import {useParams, useSearchParams} from 'react-router-dom'
+import {useNavigate, useParams, useSearchParams} from 'react-router-dom'
 import './App.css'
 
 // Matches num_players in create_room (backend.py)
@@ -9,6 +9,7 @@ const WaitingRoom = () => {
   const { roomId } = useParams()
   const [searchParams] = useSearchParams()
   const role = Number(searchParams.get("role"))
+  const navigate = useNavigate();
 
   // players[i] will be "connected" | "reserved" | "waiting"
   const [players, setPlayers] = useState({})
@@ -28,6 +29,7 @@ const WaitingRoom = () => {
       }
       if (data.type === "all_connected") {
         // TODO: navigate to the actual game screen once everyone's in
+        navigate("/editor");
       }
     }
 

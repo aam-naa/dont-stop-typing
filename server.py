@@ -17,7 +17,7 @@ app.add_middleware(
 )
 
 @app.post("/create_room")
-def create_room(num_players=5):
+def create_room(num_players=2):
     code = str(random.randint(1000, 9999))
     rooms[code] = {}
     room = rooms[code]
