@@ -46,8 +46,8 @@ const WaitingRoom = () => {
       <h2>Room code: <code>{roomId}</code></h2>
 
       <ul className="player-grid">
-
         {Array.from({ length: NUM_PLAYERS }, (_, i) => {
+            console.log(players)
         const status = players[String(i)] ?? "waiting"
         const isConnected = status === "connected"
         const isReserved = status === "reserved"
