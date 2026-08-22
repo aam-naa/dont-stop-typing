@@ -17,10 +17,10 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/lobby" element={<Lobby />} />
-        <Route path="/editor" element={<Editor />} />
-        <Route path="/room/:roomId" element={<WaitingRoom />} />
+        <Route path="/" element={<App/>} />
+        <Route path="/lobby" element={<Lobby/>} />
+        <Route path ="/editor/:roomId/:role" element={<Editor/>} />
+        <Route path="/room/:roomId" element={<WaitingRoom/>} />
         <Route path="/result" element={<ResultPage />} />
         {/* was path="leaderboard" — relative, so it was unreachable from root */}
         <Route path="/leaderboard" element={<LeaderBoard />} />

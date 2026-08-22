@@ -1,11 +1,13 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 import random
-from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 rooms = {}
 
 room_targets = {}
+
+player_code = {}
+chains = {}
 
 NUM_TARGETS = 10
 
@@ -24,13 +26,38 @@ app.add_middleware(
 def health():
     return {"status":"healthy"}
 
+class CodePayload(BaseModel):
+    code: str
+
+@app.post("/save_code/{room_id}/{role}")
+def save_code(room_id: str, role: int, payload: CodePayload):
+    if room_id not in rooms:
+        raise HTTPException(status_code=404, detail="Room not found")
+    player_code.setdefault(room_id, {})[role] = payload.code
+    chains.setdefault(room_id, {})[role].append(payload.code)
+    return {"status": "saved"}
+
+@app.get("/get_code/{room_id}/{role}")
+def get_code(room_id: str, role: int):
+    code = player_code.get(room_id, {}).get(role)
+    if code is None:
+        raise HTTPException(status_code=404, detail="No code saved for this player")
+    return {"code": code}
+
 @app.post("/create_room")
 def create_room(num_players=2):
     code = str(random.randint(1000, 9999))
     rooms[code] = {}
+    chains[code] = {}
+    player_code[code] = {}
+
     room = rooms[code]
+    chain = chains[code]
+    pc = player_code[code]
     for i in range(num_players):
         room[i] = None
+        chain[i] = [] 
+        pc[i] = ""
     room_targets[code] = random.sample(range(NUM_TARGETS), num_players)
     return {"room_id": code}
 
@@ -70,7 +97,6 @@ async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
 
     room[role] = ws
     await broadcast_room_status(room_id)
-#    await notify_room_status(ws, room_id)
 
     try:
         while True:
@@ -103,10 +129,21 @@ async def broadcast_room_status(room_id: str):
                 pass  # client may have just disconnected; ignore
 
     if all(isinstance(state, WebSocket) for state in room.values()):
-        pic_ids = random.sample(range(0, 10), 10)
+        pic_ids = random.sample(range(0, NUM_TARGETS), NUM_TARGETS)
         for i, state in enumerate(room.values()):
             if isinstance(state, WebSocket):
                 try:
                     await state.send_json({"type": "all_connected", "pic_id": pic_ids[i]})
                 except Exception:
                     pass
+
+@app.get("/debug/state")
+def debug_state():
+    return {
+        "rooms": {
+            room_id: {role: ("connected" if isinstance(v, WebSocket) else v) for role, v in room.items()}
+            for room_id, room in rooms.items()
+        },
+        "player_code": player_code,
+        "chains": chains,
+    }

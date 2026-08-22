@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import { useTheme } from "../hooks/useTheme";
 import { MONACO_THEMES, editorOptions, monacoThemeName } from "../monacoTheme";
 
-const Playground = ({ code: defaultCode, image: referenceImage }) => {
-  const [code, setCode] = useState(defaultCode);
-  const monaco = useMonaco();
-  const theme = useTheme();
-
+const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
+    const [code, setCode] = useState(defaultCode);
+      const navigate = useNavigate();
   function handleOnChange(value) {
-    console.log("value:", value);
-    setCode(value || "");
+    console.log('value:', value)
+    const newCode = value || '';
+    setCode(newCode);
+    onChange?.(newCode); // tell the parent about the edit
   }
 
   // Monaco can't read CSS custom properties, so the theme switcher has to
