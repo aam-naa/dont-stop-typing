@@ -87,7 +87,7 @@ const Editor = () => {
         {endAt && (
             <Countdown
             date={endAt}
-            onComplete={() => navigate("/result")}
+            onComplete={() => navigate(`/result/${roomId}/${role}`)}
             />
         )}
         <Playground

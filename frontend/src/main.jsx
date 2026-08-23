@@ -21,7 +21,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/lobby" element={<Lobby/>} />
         <Route path ="/editor/:roomId/:role" element={<Editor/>} />
         <Route path="/room/:roomId" element={<WaitingRoom/>} />
-        <Route path="/result" element={<ResultPage />} />
+        <Route path="/result/:roomId/:role" element={<ResultPage />} />
         {/* was path="leaderboard" — relative, so it was unreachable from root */}
         <Route path="/leaderboard" element={<LeaderBoard />} />
       </Routes>

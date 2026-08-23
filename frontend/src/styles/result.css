@@ -35,4 +35,179 @@
     flex-wrap: wrap;
     gap: 1lh 2ch;
   }
+
+  /* ── results: image lineages + voting ──────────────────────────────────────
+     Player colours live here rather than in the JSX so the stylesheet stays the
+     single source of colour. The JSX only carries an index and a name. */
+
+  .results {
+    /* Lineages are horizontal rows of thumbnails, so they need more than the
+       72ch reading column. */
+    max-inline-size: min(120ch, 100%);
+  }
+
+  .results [data-colour="0"] { --pc: #ff4a6e; }
+  .results [data-colour="1"] { --pc: #ffc93f; }
+  .results [data-colour="2"] { --pc: #4c8dff; }
+  .results [data-colour="3"] { --pc: #5ad19b; }
+  .results [data-colour="4"] { --pc: #c084fc; }
+  .results [data-colour="none"] { --pc: var(--foreground2); }
+
+  .lineage {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25lh;
+  }
+
+  .lineage-label {
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+  }
+
+  .lineage-steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 1ch;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-x: auto;
+  }
+
+  .lineage-steps li::before {
+    content: none;
+  }
+
+  .lineage-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25lh;
+    flex: 0 0 auto;
+  }
+
+  .lineage-author {
+    color: var(--pc);
+    font-size: 0.85em;
+  }
+
+  /* 300x300 scaled to a 120px thumbnail. The iframe keeps its real size so the
+     rendered result is identical to the editor preview, just smaller. */
+  .canvas-thumb {
+    inline-size: 120px;
+    block-size: 120px;
+    overflow: hidden;
+    box-shadow: 0 0 0 2px var(--pc);
+  }
+
+  .canvas-thumb > iframe {
+    inline-size: 300px;
+    block-size: 300px;
+    transform: scale(0.4);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+
+  .vote-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 1ch 2ch;
+  }
+
+  .vote-label {
+    color: var(--foreground2);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    min-inline-size: 7ch;
+  }
+
+  .vote-btn {
+    font: inherit;
+    color: var(--pc);
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0 1ch;
+    height: 1lh;
+    cursor: pointer;
+    box-shadow: inset 0 0 0 1px var(--pc);
+  }
+
+  /* Reverse video for the chosen one — a shape change, not just a hue change,
+     so the selection survives a colourblind or greyscale reading. */
+  .vote-btn[aria-pressed="true"] {
+    background: var(--pc);
+    color: var(--background0);
+    font-weight: var(--font-weight-bold);
+  }
+
+  .verdict {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5lh;
+  }
+
+  .verdict-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 1ch 2ch;
+  }
+
+  .verdict-name {
+    color: var(--pc);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* ── reveal slides ───────────────────────────────────────────────────────── */
+
+  .podium {
+    display: flex;
+    flex-direction: column;
+    gap: 1lh;
+  }
+
+  .podium-player {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5lh;
+    padding-inline-start: 1ch;
+    border-inline-start: 2px solid var(--pc);
+  }
+
+  .podium-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2ch;
+  }
+
+  .podium-name {
+    color: var(--pc);
+    font-weight: var(--font-weight-bold);
+    font-size: 1.5rem;
+  }
+
+  .podium-points {
+    color: var(--foreground2);
+  }
+
+  .countup {
+    color: var(--dst-accent);
+    font-weight: var(--font-weight-bold);
+    font-size: 2rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .name-prompt {
+    font-size: 1.25rem;
+  }
+
+  .name-prompt .prompt-field,
+  .name-prompt .prompt-field input {
+    inline-size: 24ch;
+  }
 }
