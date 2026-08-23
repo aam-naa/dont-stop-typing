@@ -107,7 +107,7 @@ const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
         {/* Pinned bottom-right, as the original `absolute bottom-6 right-6` was.
             Still has no onClick — wiring submission is gameplay, not styling. */}
         <div className="actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <button type="button">Submit!</button>
+            <button type="button" onClick={handleClick}>Submit!</button>
             {joke && <span>{joke}</span>}
         </div>
       </div>
