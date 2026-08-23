@@ -34,7 +34,12 @@ const Editor = () => {
     const [ currCode, setCurrCode ] = useState(sImage);
     const navigate = useNavigate();
     const codeRef = useRef(currCode);
-    saveCode(roomId, role, sImage);
+
+    useEffect(() => {
+        if (!roomId || role === undefined) return;
+        saveCode(roomId, role, sImage);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [roomId, role]);
 
     useEffect(() => { codeRef.current = currCode; }, [currCode]);
 
