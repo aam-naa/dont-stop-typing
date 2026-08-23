@@ -26,7 +26,7 @@ async function saveCode(roomId, role, code) {
 const Editor = () => {
     const location = useLocation();
     const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
-    const [rImage, setRImage] = useState(target.image);
+    const [rImage, setRImage] = useState(target.solution);
     const [sImage, setSImage] = useState(target.starter);
     const { roomId, role } = useParams();
     const [endAt, setEndAt] = useState(null);
