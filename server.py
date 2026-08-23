@@ -46,6 +46,7 @@ class CodePayload(BaseModel):
 def save_code(room_id: str, role: int, payload: CodePayload):
     if room_id not in rooms:
         raise HTTPException(status_code=404, detail="Room not found")
+
     player_code.setdefault(room_id, {})[role] = payload.code
     chains.setdefault(room_id, {})[role].append(payload.code)
     return {"status": "saved"}
@@ -249,7 +250,7 @@ def _award_locked(room_id: str):
     return payload
 
 @app.post("/create_room")
-def create_room(num_players=5):
+def create_room(num_players=3):
     code = str(random.randint(1000, 9999))
     rooms[code] = {}
     chains[code] = {}
@@ -286,7 +287,7 @@ async def join_room(room_id: str, username: str = None):
     return {"room_id": room_id, "role": role}
 
 @app.websocket("/ws/{room_id}/{role}")
-async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=5):
+async def websocket_endpt(ws: WebSocket, room_id, role:int, num_players=3):
     await ws.accept()
     if role not in range(num_players):
         await ws.close(code=4040)
