@@ -27,12 +27,14 @@ async function saveCode(roomId, role, code) {
 const Editor = () => {
     const location = useLocation();
     const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
-
+    const rImage = target.image
+    const sImage = target.starter
     const { roomId, role } = useParams();
     const [endAt, setEndAt] = useState(null);
-    const [ currCode, setCurrCode ] = useState(target.starter);
+    const [ currCode, setCurrCode ] = useState(sImage);
     const navigate = useNavigate();
     const codeRef = useRef(currCode);
+    saveCode(roomId, role, sImage);
 
     useEffect(() => { codeRef.current = currCode; }, [currCode]);
 
@@ -45,6 +47,9 @@ const Editor = () => {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/debug/state`);
         const state = await res.json();
         console.log("server state:", state);
+        const next = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
+        rImage = next
+        // sImage = 
     }
     
     async function handleSwap(myRoomId, myRole, otherRole, currentCode) {
@@ -78,7 +83,7 @@ const Editor = () => {
             />
         )}
         <Playground
-        code={target.starter} image={target.image} onChange={setCurrCode}
+        code={sImage} image={rImage} onChange={setCurrCode}
         />
         </>
     )
