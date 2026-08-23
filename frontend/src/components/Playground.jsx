@@ -4,6 +4,17 @@ import { useNavigate } from "react-router";
 import { useTheme } from "../hooks/useTheme";
 import { MONACO_THEMES, editorOptions, monacoThemeName } from "../monacoTheme";
 
+const JOKES = 
+    [
+        "you're a quick one, aren't ya?", 
+        "you shouldn't click things without permission you know...", 
+        "no way you finished this quickly...", 
+        "did you really think this button would work?",
+        "YOU JUST DETONATED A BOMB!!!! (jk :P)",
+        "access denied, didn't like your pic",
+        "maybe press it one more time..."
+    ];
+
 const isImageUrl = (value) =>
   typeof value === "string" && /\.(png|jpe?g|gif|svg|webp)(\?.*)?$/i.test(value);
 
@@ -15,6 +26,13 @@ const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
   const monaco = useMonaco();
   const theme = useTheme();
   const editorRef = useRef(null);
+  const [joke, setJoke] = useState("")
+
+  function handleClick() {
+    const random = JOKES[Math.floor(Math.random() * JOKES.length)];
+    setJoke(random);
+  }
+
 
   function handleOnChange(value) {
     console.log('value:', value)
@@ -42,6 +60,8 @@ const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
     }
     monaco.editor.setTheme(monacoThemeName(theme));
   }, [monaco, theme]);
+
+
 
   return (
     <div className="editor-grid">
@@ -86,8 +106,9 @@ const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
 
         {/* Pinned bottom-right, as the original `absolute bottom-6 right-6` was.
             Still has no onClick — wiring submission is gameplay, not styling. */}
-        <div className="actions">
-          <button type="button">Submit!</button>
+        <div className="actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button type="button" onClick={handleClick}>Submit!</button>
+            {joke && <span>{joke}</span>}
         </div>
       </div>
     </div>
