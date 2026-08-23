@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import Shell, { Seg } from "./components/Shell";
 import { TARGETS } from "./targets.js";
+import { getUsername } from "./username.js";
 
 function Lobby() {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ function Lobby() {
     const { room_id } = await res.json();
 
     // Claim a slot in the room we just made, so the host gets a role too.
-    const joinRes = await fetch(`${import.meta.env.VITE_API_URL}/join_room/${room_id}`, {
+    const joinRes = await fetch(`${import.meta.env.VITE_API_URL}/join_room/${room_id}?username=${encodeURIComponent(getUsername())}`, {
       method: "POST",
     });
     const { role } = await joinRes.json();
@@ -29,7 +30,7 @@ function Lobby() {
     const form = e.target;
     const formData = new FormData(form);
     const joinCode = formData.get("room");
-    const res = await fetch(`${import.meta.env.VITE_API_URL}/join_room/${joinCode}`, {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/join_room/${joinCode}?username=${encodeURIComponent(getUsername())}`, {
       method: "POST",
     });
 
