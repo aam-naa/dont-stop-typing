@@ -7,9 +7,8 @@ import {useLocation} from 'react-router-dom';
 import {TARGETS} from './targets.js';
 
 const GAME_DURATION_MS = 5 * 60 * 1000; // 5 minutes
-const INTERVAL_MS = 60 * 1000; // 1 minute 
+const INTERVAL_MS = 10 * 1000; // 1 minute 
 const MAX_CALLS = 5;
-const NUM_PLAYERS = 5;
 
 const renderer = ({ minutes, seconds }) => (
   <span>{minutes}:{String(seconds).padStart(2, '0')}</span>
@@ -27,8 +26,8 @@ async function saveCode(roomId, role, code) {
 const Editor = () => {
     const location = useLocation();
     const target = TARGETS.find(t => t.id === location.state?.picId) ?? TARGETS[0];
-    var rImage = target.image
-    var sImage = target.starter
+    const [rImage, setRImage] = useState(target.image);
+    const [sImage, setSImage] = useState(target.starter);
     const { roomId, role } = useParams();
     const [endAt, setEndAt] = useState(null);
     const [ currCode, setCurrCode ] = useState(sImage);
@@ -46,19 +45,22 @@ const Editor = () => {
     async function swap() {
         console.log("swap");
         const roleNum = Number(role)
-        await handleSwap(roomId, roleNum, (roleNum + 1) % NUM_PLAYERS, codeRef.current);
+        await handleSwap(roomId, roleNum, codeRef.current);
 
         // debug: log current server state to the browser console
         const res = await fetch(`${import.meta.env.VITE_API_URL}/debug/state`);
         const state = await res.json();
         console.log("server state:", state);
-        rImage = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
-        sImage = state.chains[roomId][(roleNum+1)%NUM_PLAYERS][0]
-        console.log("rimage next")
-        // sImage = 
+
+        const roles = Object.keys(state.rooms[roomId]).map(Number).sort((a, b) => a - b);
+        const nextRole = roles[(roles.indexOf(roleNum) + 1) % roles.length];
+        console.log("swapping with role", nextRole, "of", roles);
+
+        setRImage(state.player_code[roomId][nextRole])
+        setSImage(state.chains[roomId][nextRole][0])
     }
-    
-    async function handleSwap(myRoomId, myRole, otherRole, currentCode) {
+
+    async function handleSwap(myRoomId, myRole, currentCode) {
         // Save my current code before I lose it
         await saveCode(myRoomId, myRole, currentCode);
     }
