@@ -6,9 +6,9 @@ import Countdown from 'react-countdown'
 import {useLocation} from 'react-router-dom';
 import {TARGETS} from './targets.js';
 
-const GAME_DURATION_MS = 100 * 1000; // 5 minutes
+const GAME_DURATION_MS = 60 * 1000; // 5 minutes
 const INTERVAL_MS = 20 * 1000; // 1 minute 
-const MAX_CALLS = 5;
+const MAX_CALLS = 3;
 
 const renderer = ({ minutes, seconds }) => (
   <span>{minutes}:{String(seconds).padStart(2, '0')}</span>
