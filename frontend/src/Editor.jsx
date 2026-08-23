@@ -52,9 +52,8 @@ const Editor = () => {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/debug/state`);
         const state = await res.json();
         console.log("server state:", state);
-        const next = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
-        rImage = next
-        sImage = state.chain[roomId][(roleNum+1)%NUM_PLAYERS][0]
+        rImage = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
+        sImage = state.chains[roomId][(roleNum+1)%NUM_PLAYERS][0]
         console.log("rimage next")
         // sImage = 
     }
