@@ -4,7 +4,7 @@ import Countdown from "react-countdown";
 import Shell, { Seg } from "./components/Shell";
 
 // Matches num_players in create_room (backend.py)
-const NUM_PLAYERS = 5;
+const NUM_PLAYERS = 3;
 
 // How long "Starting!" stays on screen after the countdown hits zero.
 const START_HOLD_MS = 1500;
