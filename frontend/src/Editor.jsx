@@ -54,6 +54,7 @@ const Editor = () => {
         console.log("server state:", state);
         const next = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
         rImage = next
+        sImage = state.chain[roomId][(roleNum+1)%NUM_PLAYERS][0]
         console.log("rimage next")
         // sImage = 
     }
