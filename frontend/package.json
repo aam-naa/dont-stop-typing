@@ -14,6 +14,7 @@
     "@webtui/css": "^0.1.10",
     "@webtui/theme-catppuccin": "^0.0.5",
     "@webtui/theme-gruvbox": "^0.0.3",
+    "animate.css": "^4.1.1",
     "monaco-editor": "^0.56.0",
     "react": "^19.2.8",
     "react-countdown": "^2.3.6",
