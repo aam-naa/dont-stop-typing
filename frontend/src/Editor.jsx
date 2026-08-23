@@ -38,7 +38,7 @@ const Editor = () => {
     useEffect(() => {
         if (!roomId || role === undefined) return;
         saveCode(roomId, role, sImage);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        console.log("saved starting")
     }, [roomId, role]);
 
     useEffect(() => { codeRef.current = currCode; }, [currCode]);
@@ -52,8 +52,9 @@ const Editor = () => {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/debug/state`);
         const state = await res.json();
         console.log("server state:", state);
-        const next = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
-        rImage = next
+        rImage = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
+        sImage = state.chains[roomId][(roleNum+1)%NUM_PLAYERS][0]
+        console.log("rimage next")
         // sImage = 
     }
     
