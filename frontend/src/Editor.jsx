@@ -6,8 +6,8 @@ import Countdown from 'react-countdown'
 import {useLocation} from 'react-router-dom';
 import {TARGETS} from './targets.js';
 
-const GAME_DURATION_MS = 20 * 1000; // 5 minutes
-const INTERVAL_MS = 10 * 1000; // 1 minute 
+const GAME_DURATION_MS = 100 * 1000; // 5 minutes
+const INTERVAL_MS = 20 * 1000; // 1 minute 
 const MAX_CALLS = 5;
 
 const renderer = ({ minutes, seconds }) => (
