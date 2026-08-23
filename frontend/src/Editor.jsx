@@ -38,7 +38,7 @@ const Editor = () => {
     useEffect(() => {
         if (!roomId || role === undefined) return;
         saveCode(roomId, role, sImage);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        console.log("saved starting")
     }, [roomId, role]);
 
     useEffect(() => { codeRef.current = currCode; }, [currCode]);
@@ -54,6 +54,7 @@ const Editor = () => {
         console.log("server state:", state);
         const next = state.player_code[roomId][(roleNum+1)% NUM_PLAYERS]
         rImage = next
+        console.log("rimage next")
         // sImage = 
     }
     
