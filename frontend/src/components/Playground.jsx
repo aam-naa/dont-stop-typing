@@ -4,6 +4,9 @@ import { useNavigate } from "react-router";
 import { useTheme } from "../hooks/useTheme";
 import { MONACO_THEMES, editorOptions, monacoThemeName } from "../monacoTheme";
 
+const isImageUrl = (value) =>
+  typeof value === "string" && /\.(png|jpe?g|gif|svg|webp)(\?.*)?$/i.test(value);
+
 const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
   const [code, setCode] = useState(defaultCode);
   const navigate = useNavigate();
@@ -62,7 +65,15 @@ const Playground = ({ code: defaultCode, image: referenceImage, onChange }) => {
         <figure className="editor-figure">
           <figcaption>reference image</figcaption>
           <div className="canvas">
-            <img src={referenceImage} alt="Target" />
+            {isImageUrl(referenceImage) ? (
+              <img src={referenceImage} alt="Target" />
+            ) : (
+              <iframe
+                title="reference"
+                srcDoc={referenceImage ?? ""}
+                sandbox=""
+              />
+            )}
           </div>
         </figure>
 
